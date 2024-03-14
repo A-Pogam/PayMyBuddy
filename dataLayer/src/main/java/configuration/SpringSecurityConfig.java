@@ -28,7 +28,7 @@ public class SpringSecurityConfig {
             auth.requestMatchers("/admin").hasRole("ADMIN");
             auth.requestMatchers("/user").hasRole("USER");
             auth.anyRequest().authenticated();
-        }).formLogin(form -> form.loginPage("/login").permitAll()).build();
+        }).formLogin(Customizer.withDefaults()).build();
     }
     @Bean
     public UserDetailsService users(PasswordEncoder passwordEncoder) {
