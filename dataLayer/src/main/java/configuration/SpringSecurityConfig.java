@@ -17,8 +17,6 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.security.core.userdetails.User.withUsername;
 
-
-
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig {
@@ -30,6 +28,7 @@ public class SpringSecurityConfig {
             auth.anyRequest().authenticated();
         }).formLogin(Customizer.withDefaults()).build();
     }
+
     @Bean
     public UserDetailsService users(PasswordEncoder passwordEncoder) {
         UserDetails user = withUsername("user@example.com")
@@ -43,20 +42,23 @@ public class SpringSecurityConfig {
         return new InMemoryUserDetailsManager(user, admin);
     }
 
-
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
+    public CustomUserDetailsService customUserDetailsService() {
+        return new CustomUserDetailsService();
+    }
+
+    @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http, BCryptPasswordEncoder bCryptPasswordEncoder) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(customUserDetailsService).passwordEncoder(bCryptPasswordEncoder);
+        authenticationManagerBuilder.userDetailsService(customUserDetailsService()).passwordEncoder(bCryptPasswordEncoder);
         return authenticationManagerBuilder.build();
     }
+
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
-
 }
-
