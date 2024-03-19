@@ -8,18 +8,16 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-
-import static org.springframework.security.core.userdetails.User.withUsername;
 
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig {
+
+    @Autowired
+    private UserDetailsService customUserDetailsService;
 
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(auth -> {
@@ -29,17 +27,9 @@ public class SpringSecurityConfig {
         }).formLogin(Customizer.withDefaults()).build();
     }
 
-    @Bean
-    public UserDetailsService users(PasswordEncoder passwordEncoder) {
-        UserDetails user = withUsername("user@example.com")
-                .password(passwordEncoder.encode("user"))
-                .roles("USER")
-                .build();
-        UserDetails admin = withUsername("admin@example.com")
-                .password(passwordEncoder.encode("admin"))
-                .roles("USER", "ADMIN")
-                .build();
-        return new InMemoryUserDetailsManager(user, admin);
+    @Bean //renvoyer email+mdp
+    public UserDetailsService userDetailsService() {
+        return customUserDetailsService;
     }
 
     @Bean
@@ -48,17 +38,8 @@ public class SpringSecurityConfig {
     }
 
     @Bean
-    public CustomUserDetailsService customUserDetailsService() {
-        return new CustomUserDetailsService();
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http, BCryptPasswordEncoder bCryptPasswordEncoder) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(customUserDetailsService()).passwordEncoder(bCryptPasswordEncoder);
+    public AuthenticationManager authenticationManager(AuthenticationManagerBuilder authenticationManagerBuilder, BCryptPasswordEncoder bCryptPasswordEncoder) throws Exception {
+        authenticationManagerBuilder.userDetailsService(customUserDetailsService).passwordEncoder(bCryptPasswordEncoder);
         return authenticationManagerBuilder.build();
     }
-
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
 }

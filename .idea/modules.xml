@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/PayMyBuddy.iml" filepath="$PROJECT_DIR$/.idea/PayMyBuddy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dataLayer/dataLayer.iml" filepath="$PROJECT_DIR$/dataLayer/dataLayer.iml" />
     </modules>
   </component>
 </project>
