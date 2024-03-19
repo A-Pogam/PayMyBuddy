@@ -19,12 +19,10 @@ import org.springframework.stereotype.Service;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final DBUserRepository dbUserRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public CustomUserDetailsService(DBUserRepository dbUserRepository, BCryptPasswordEncoder passwordEncoder) {
+    public CustomUserDetailsService(DBUserRepository dbUserRepository) {
         this.dbUserRepository = dbUserRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -34,7 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found with email: " + email);
         }
 
-        return new User(user.getEmail(), user.getPassword(), getGrantedAuthorities(user.getRole()));
+        return new User(user.getEmail(), encodePassword(user.getPassword()), getGrantedAuthorities(user.getRole()));
     }
 
     private List<GrantedAuthority> getGrantedAuthorities(String role) {
@@ -44,7 +42,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     public boolean passwordsMatch(String enteredPassword, String encodedPassword) {
-        return passwordEncoder.matches(enteredPassword, encodedPassword);
+        return new BCryptPasswordEncoder().matches(enteredPassword, encodedPassword);
+    }
+
+    private String encodePassword(String password) {
+        return new BCryptPasswordEncoder().encode(password);
     }
 }
-
