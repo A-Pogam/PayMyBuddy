@@ -1,4 +1,4 @@
-package configuration;
+package com.paymybuddy.dataLayer.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,18 +16,15 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SpringSecurityConfig {
 
-    @Autowired
-    private UserDetailsService customUserDetailsService;
+    private final UserDetailsService customUserDetailsService;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.authorizeHttpRequests(auth -> {
-            auth.requestMatchers("/admin").hasRole("ADMIN");
-            auth.requestMatchers("/user").hasRole("USER");
-            auth.anyRequest().authenticated();
-        }).formLogin(Customizer.withDefaults()).build();
+    public SpringSecurityConfig(UserDetailsService customUserDetailsService, BCryptPasswordEncoder passwordEncoder) {
+        this.customUserDetailsService = customUserDetailsService;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    @Bean //renvoyer email+mdp
+    @Bean // renvoyer email+mdp
     public UserDetailsService userDetailsService() {
         return customUserDetailsService;
     }
@@ -38,8 +35,8 @@ public class SpringSecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationManagerBuilder authenticationManagerBuilder, BCryptPasswordEncoder bCryptPasswordEncoder) throws Exception {
-        authenticationManagerBuilder.userDetailsService(customUserDetailsService).passwordEncoder(bCryptPasswordEncoder);
+    public AuthenticationManager authenticationManager(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+        authenticationManagerBuilder.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
         return authenticationManagerBuilder.build();
     }
 }
