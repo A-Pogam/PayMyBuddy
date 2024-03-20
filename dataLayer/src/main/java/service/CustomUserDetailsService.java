@@ -1,10 +1,10 @@
-package com.paymybuddy.dataLayer.service;
+package service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.paymybuddy.dataLayer.model.DBUser;
-import com.paymybuddy.dataLayer.repository.DBUserRepository;
+import model.DBUser;
+import repository.DBUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,12 +18,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final DBUserRepository dbUserRepository;
-
     @Autowired
-    public CustomUserDetailsService(DBUserRepository dbUserRepository) {
-        this.dbUserRepository = dbUserRepository;
-    }
+    private DBUserRepository dbUserRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

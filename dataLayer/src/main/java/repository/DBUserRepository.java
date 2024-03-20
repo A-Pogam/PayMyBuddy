@@ -1,8 +1,8 @@
-package com.paymybuddy.dataLayer.repository;
+package repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import com.paymybuddy.dataLayer.model.DBUser;
+import model.DBUser;
 
 @Repository
 public interface DBUserRepository extends JpaRepository<DBUser, Integer> {
