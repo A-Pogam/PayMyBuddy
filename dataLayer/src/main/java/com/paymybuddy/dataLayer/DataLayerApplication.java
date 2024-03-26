@@ -8,7 +8,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import repository.DBUserRepository;
 
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+@SpringBootApplication(scanBasePackages = {"com.paymybuddy.dataLayer", "controller", "service", "repository"},
+		exclude = {DataSourceAutoConfiguration.class})
 public class DataLayerApplication {
 
 	public static void main(String[] args) {
