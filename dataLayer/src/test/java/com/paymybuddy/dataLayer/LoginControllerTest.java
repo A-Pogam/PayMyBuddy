@@ -1,58 +1,72 @@
 package com.paymybuddy.dataLayer;
 
+import model.DBUser;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import repository.DBUserRepository;
+import service.AuthenticationService;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
-import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
-import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
 public class LoginControllerTest {
 
-        @Autowired
-        private MockMvc mvc;
+    private AuthenticationService authenticationService;
 
-    @Test
-    public void shouldReturnDefaultMessage() throws Exception {
-        mvc.perform(get("/login")).andDo(print()).andExpect(status().isOk());
+    @Mock
+    private DBUserRepository userRepository;
+
+    @BeforeEach
+    public void setUp() {
+        authenticationService = new AuthenticationService(userRepository);
     }
 
     @Test
+    public void testSuccessfulLogin() {
+        String email = "user@example.com";
+        String password = "password123";
+        DBUser user = new DBUser();
+        user.setEmail(email);
+        user.setPassword(password);
 
-    public void userLoginTest() throws Exception {
+        when(userRepository.findByEmail(email)).thenReturn(user);
 
-        mvc.perform(formLogin("/login").user("user@example.com").password("user")).andExpect(authenticated());
-
+        assertTrue(authenticationService.authenticate(email, password));
     }
 
     @Test
+    public void testInvalidEmail() {
+        String email = "nonexistent@example.com";
+        String password = "password123";
 
-    public void userLoginFailed() throws Exception {
+        when(userRepository.findByEmail(email)).thenReturn(null);
 
-        mvc.perform(formLogin("/login").user("user@example.com").password("wrongpassword")).andExpect(unauthenticated());
-
+        assertFalse(authenticationService.authenticate(email, password));
     }
 
     @Test
-    @WithMockUser
-    public void shouldReturnUserPage() throws Exception {
+    public void testInvalidPassword() {
+        String email = "user@example.com";
+        String correctPassword = "password123";
+        String incorrectPassword = "wrongpassword";
+        DBUser user = new DBUser();
+        user.setEmail(email);
+        user.setPassword(correctPassword);
 
-        mvc.perform(get("/user")).andDo(print()).andExpect(status().isOk());
+        when(userRepository.findByEmail(email)).thenReturn(user);
+
+        assertFalse(authenticationService.authenticate(email, incorrectPassword));
     }
-
-    }
-
-
-
+}

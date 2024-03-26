@@ -1,30 +1,29 @@
 package service;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import model.DBUser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import repository.DBUserRepository;
 
 @Service
 public class AuthenticationService {
 
-    private final CustomUserDetailsService userDetailsService;
-
-    public AuthenticationService(CustomUserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
+    @Autowired
+    private DBUserRepository userRepository;
 
     public boolean authenticate(String email, String enteredPassword) {
-        // Utilise userDetailsService.loadUserByUsername(email) et le reste de votre logique d'authentification ici
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-        if (userDetails == null) {
+        // Récupère l'utilisateur depuis la base de données en fonction de l'email
+        DBUser user = userRepository.findByEmail(email);
+        if (user == null) {
             return false; // L'utilisateur n'existe pas
         }
 
-        // Récupère les informations de l'utilisateur
-        String encodedPassword = userDetails.getPassword(); // Mot de passe encodé
-        GrantedAuthority userRole = userDetails.getAuthorities().iterator().next(); // Rôle de l'utilisateur
+        // Compare le mot de passe entré avec le mot de passe en clair stocké dans la base de données
+        return enteredPassword.equals(user.getPassword());
+    }
 
-        // Compare les mots de passe
-        return userDetailsService.passwordsMatch(enteredPassword, encodedPassword);
+    @Autowired
+    public AuthenticationService(DBUserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 }
