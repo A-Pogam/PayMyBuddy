@@ -15,16 +15,6 @@ import javax.sql.DataSource;
 @EnableJpaRepositories(basePackages = "org.PayMyBuddy.repository")
 public class SecurityConfig {
 
-    /*fix pb missing url driver*/
-    @Bean
-    public DataSource getDataSource() {
-        return DataSourceBuilder.create()
-                .driverClassName("com.mysql.cj.jdbc.Driver")
-                .url("jdbc:mysql://localhost:3306/paymybuddy_db")
-                .username("root")
-                .password("rootroot")
-                .build();
-    }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         RequestMatcher loginPageMatcher = new AntPathRequestMatcher("/login");
@@ -38,7 +28,13 @@ public class SecurityConfig {
                 )
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
-                        .defaultSuccessUrl("/home", true) // Redirection après une connexion réussie
+                        .defaultSuccessUrl("/home", true) // Redirection after a successful connection
+                        .successHandler((request, response, authentication) -> {
+                            // Log message to check if redirection to /home is triggered
+                            System.out.println("Redirecting to /home after successful login");
+                            response.sendRedirect("/home");
+                        })
+
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
