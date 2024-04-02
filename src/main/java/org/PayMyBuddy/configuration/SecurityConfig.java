@@ -1,51 +1,48 @@
 package org.PayMyBuddy.configuration;
 
-import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.PayMyBuddy.service.DBUserDetailsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
-
-import javax.sql.DataSource;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
 @EnableJpaRepositories(basePackages = "org.PayMyBuddy.repository")
 public class SecurityConfig {
 
+    @Autowired
+    private DBUserDetailsService dbUserDetailsService;
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        RequestMatcher loginPageMatcher = new AntPathRequestMatcher("/login");
-        RequestMatcher homePageMatcher = new AntPathRequestMatcher("/home");
-
-        http
-                .authorizeRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers(loginPageMatcher).permitAll()
-                        .requestMatchers(homePageMatcher).authenticated()
-                        .anyRequest().authenticated()
-                )
-                .formLogin(formLogin -> formLogin
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/home", true) // Redirection after a successful connection
-                        .successHandler((request, response, authentication) -> {
-                            // Log message to check if redirection to /home is triggered
-                            System.out.println("Redirecting to /home after successful login");
-                            response.sendRedirect("/home");
-                        })
-
-                )
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login")
-                );
-        return http.build();
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
-}
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .authorizeRequests(authorizeRequests -> authorizeRequests
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/home").authenticated())
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .usernameParameter("email")
+                        .passwordParameter("password")
+                        .defaultSuccessUrl("/", true))
+                .rememberMe(rememberMeConfigurer -> rememberMeConfigurer
+                        .userDetailsService(userDetailsService()))
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID"));
+    }
 
+    protected UserDetailsService userDetailsService() {
+        return dbUserDetailsService;
+    }
+}
