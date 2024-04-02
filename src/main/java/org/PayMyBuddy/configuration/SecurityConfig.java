@@ -45,9 +45,10 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .usernameParameter("email")
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/", true))
+                        .defaultSuccessUrl("/home", true))
                 .rememberMe(rememberMeConfigurer -> rememberMeConfigurer
                         .userDetailsService(userDetailsService()))
+
 
 
 
