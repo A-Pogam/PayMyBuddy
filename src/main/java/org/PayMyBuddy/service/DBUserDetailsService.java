@@ -26,10 +26,13 @@ public class DBUserDetailsService implements UserDetailsService {
         if (user.isEmpty()) {
             throw new UsernameNotFoundException("Email " + username + " does not match any user.");
         }
+        // Check if the password is null or empty
+        if (user.get().getPassword() == null || user.get().getPassword().isEmpty()) {
+            throw new PasswordNotFoundException("Wrong password");
+        }
         return new org.springframework.security.core.userdetails.User(
                 user.get().getEmail(), user.get().getPassword(), true, true,
                 true, true,
                 Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
     }
 }
-
