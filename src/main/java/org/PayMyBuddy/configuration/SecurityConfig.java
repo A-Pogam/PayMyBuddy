@@ -34,11 +34,21 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         RequestMatcher loginPageMatcher = new AntPathRequestMatcher("/login");
         RequestMatcher homePageMatcher = new AntPathRequestMatcher("/home");
+        RequestMatcher transferPageMatcher = new AntPathRequestMatcher("/transfer");
+        RequestMatcher contactPageMatcher = new AntPathRequestMatcher("/contact");
+        RequestMatcher addConnectionPageMatcher = new AntPathRequestMatcher("/add-connection");
+        RequestMatcher updateBalancePageMatcher = new AntPathRequestMatcher("/update-balance");
+
 
         http
                 .authorizeRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers(loginPageMatcher).permitAll()
                         .requestMatchers(homePageMatcher).authenticated()
+                        .requestMatchers(transferPageMatcher).authenticated()
+                        .requestMatchers(contactPageMatcher).authenticated()
+                        .requestMatchers(addConnectionPageMatcher).authenticated()
+                        .requestMatchers(updateBalancePageMatcher).authenticated()
+
                         .anyRequest().authenticated()
                 )
                 .formLogin(formLogin -> formLogin

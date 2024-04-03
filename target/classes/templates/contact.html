@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Contact us</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/60778dae53.js" crossorigin="anonymous"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+<!-- nav bar -->
+<nav class="navbar navbar-expand-lg navbar-light">
+    <a class="btn btn-success" href="/home">Pay My Buddy</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/home">Home</a>
+            </li>
+            <li class="nav-item">
+                <p><a href="/transfer" class="nav-link">Transfer</a></p>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/profile">Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="d-flex justify-content-between align-items-center m-2" href="/contact">Contact</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/login">Log off</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- additional nav bar -->
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/home">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Contact</li>
+    </ol>
+</nav>
+
+<main class="container">
+
+    <div class="px-4 py-5 px-md-5 text-center text-lg-start align-items-center justify-content-around">
+        <!--Alert message-->
+        <div th:if="${param.error}"
+             th:text="${errorMessage}"
+             class="alert alert-danger alert-dismissible fade show mb-lg-0"
+             role="alert"> Error message.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div th:if="${param.sent}"
+             th:text="Message successfully sent!"
+             class="alert alert-success alert-dismissible fade show mb-lg-0"
+             role="alert"> Successfully sent.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <!--Section heading-->
+        <!--Section description-->
+        <p class="w-responsive mx-auto mb-5" style="color: hsl(217, 10%, 50.8%)">A question? <br>
+            Our team will come back to you quicly !</p>
+
+        <div class="row">
+            <!--Grid column-->
+            <div class="col mb-lg-0">
+                <div class="card">
+                    <div class="card-body">
+                        <!--Grid column-->
+                        <div class="col">
+                            <form id="contact-form" name="contact-form">
+                                <!-- th:action="@{/contact}" method="POST" th:object="${contactForm}" -->
+                                <!-- Name input -->
+                                <div class="form-outline mb-4">
+                                    <input type="text" id="name" class="form-control" placeholder="Name"/>
+                                </div><!-- required
+                                           th:field="*{name}" -->
+
+                                <!-- Email input -->
+                                <div class="form-outline mb-4">
+                                    <input type="email" id="email" class="form-control" placeholder="Email address" />
+                                </div><!-- required
+                                           th:field="*{email}" -->
+
+                                <!-- Subject input -->
+                                <div class="form-outline mb-4">
+                                    <input type="text" id="subject" class="form-control" placeholder="Subject" />
+                                </div>   <!-- required
+                                           th:field="*{subject}" -->
+
+
+                                <!-- Message input -->
+                                <div class="form-outline mb-4">
+                                    <textarea type="text" id="message" name="message" rows="2" class="form-control md-textarea"
+                                              placeholder="Hi, Team..."></textarea>
+                                </div>
+                                <!-- required
+                                              th:field="*{message}"-->
+
+                            </form>
+
+                            <div class="text-center my-2">
+                                <button class="btn btn-primary text-white" type="submit">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Grid column-->
+
+            <!--Grid column-->
+            <div class="col-md-3 text-center ml-5" id="contact-information">
+                <ul class="list-unstyled mb-0">
+                    <li><i class="fas fa-map-marker-alt fa-2x" style="color: #f48527"></i>
+                        <p>Pay My Buddy<br>2, rue de la Comté<br>France</p>
+                    </li>
+
+                    <li><i class="fas fa-phone mt-4 fa-2x" style="color: #74d36a"></i>
+                        <p>+33 0 00 00 00</p>
+                    </li>
+
+                    <li><i class="fas fa-envelope mt-4 fa-2x" style="color: #61aef3"></i>
+                        <p>contact@paymybuddy.com</p>
+                    </li>
+                </ul>
+            </div>
+            <!--Grid column-->
+
+        </div>
+    </div>
+</main>
+
+</body>
+</html>
