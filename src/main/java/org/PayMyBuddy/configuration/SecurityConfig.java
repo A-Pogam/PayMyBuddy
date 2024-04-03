@@ -50,8 +50,6 @@ public class SecurityConfig {
                         .userDetailsService(userDetailsService()))
 
 
-
-
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login")
