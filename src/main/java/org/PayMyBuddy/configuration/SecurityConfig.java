@@ -38,6 +38,7 @@ public class SecurityConfig {
         RequestMatcher contactPageMatcher = new AntPathRequestMatcher("/contact");
         RequestMatcher addConnectionPageMatcher = new AntPathRequestMatcher("/add-connection");
         RequestMatcher updateBalancePageMatcher = new AntPathRequestMatcher("/update-balance");
+        RequestMatcher profilePageMatcher = new AntPathRequestMatcher("/profile");
 
 
         http
@@ -48,6 +49,7 @@ public class SecurityConfig {
                         .requestMatchers(contactPageMatcher).authenticated()
                         .requestMatchers(addConnectionPageMatcher).authenticated()
                         .requestMatchers(updateBalancePageMatcher).authenticated()
+                        .requestMatchers(profilePageMatcher).authenticated()
 
                         .anyRequest().authenticated()
                 )
