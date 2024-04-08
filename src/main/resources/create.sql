@@ -1,9 +1,7 @@
-DROP DATABASE IF EXISTS paymybuddy_db;
-
-CREATE DATABASE paymybuddy_db;
+CREATE DATABASE IF NOT EXISTS paymybuddy_db;
 USE paymybuddy_db;
 
-CREATE TABLE dbuser (
+CREATE TABLE IF NOT EXISTS dbuser (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(100),
@@ -13,7 +11,7 @@ CREATE TABLE dbuser (
     balance DECIMAL(10, 2)
 );
 
-CREATE TABLE connection (
+CREATE TABLE IF NOT EXISTS connection (
     connection_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     fk_initializer_id INT NOT NULL,
     fk_receiver_id INT NOT NULL,
@@ -26,7 +24,7 @@ CREATE TABLE connection (
         ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
-CREATE TABLE transaction (
+CREATE TABLE IF NOT EXISTS transaction (
     transaction_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     fk_issuer_id INT NOT NULL,
     fk_payee_id INT NOT NULL,

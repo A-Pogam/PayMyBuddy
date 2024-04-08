@@ -54,14 +54,16 @@
     <div class="row-6 mb-5 mb-lg-0 my-4">
         <div class="card">
             <div class="card-body py-4 px-md-4">
-                <form method="post" > <!-- th:action="@{/transfer/add-connection}" -->
+                <form method="post" th:action="@{/connection}">
                     <!--email input-->
+                    <div class="notification">
+                        <p th:text="${message}"></p>
+                    </div>
                     <div class="form-group">
                         <label for="email">Please enter your contact's email:</label>
                         <input type="email"  class="form-control" id="email"
-                               placeholder="mynewbuddy@example.com" required name="email">
+                               placeholder="mynewbuddy@example.com" required name="email" th:value="${email}">
                     </div>
-                    <!--th:value="${email}"-->
                     <!--submit and cancel buttons-->
                     <div class="row justify-content-center align-items-center mx-auto m-2">
                         <button type="submit" class="btn btn-primary col-3 m-4">

@@ -36,7 +36,7 @@ public class SecurityConfig {
         RequestMatcher homePageMatcher = new AntPathRequestMatcher("/home");
         RequestMatcher transferPageMatcher = new AntPathRequestMatcher("/transfer");
         RequestMatcher contactPageMatcher = new AntPathRequestMatcher("/contact");
-        RequestMatcher addConnectionPageMatcher = new AntPathRequestMatcher("/add-connection");
+        RequestMatcher ConnectionPageMatcher = new AntPathRequestMatcher("/connection");
         RequestMatcher updateBalancePageMatcher = new AntPathRequestMatcher("/update-balance");
         RequestMatcher profilePageMatcher = new AntPathRequestMatcher("/profile");
 
@@ -47,9 +47,10 @@ public class SecurityConfig {
                         .requestMatchers(homePageMatcher).authenticated()
                         .requestMatchers(transferPageMatcher).authenticated()
                         .requestMatchers(contactPageMatcher).authenticated()
-                        .requestMatchers(addConnectionPageMatcher).authenticated()
+                        .requestMatchers(ConnectionPageMatcher).authenticated()
                         .requestMatchers(updateBalancePageMatcher).authenticated()
                         .requestMatchers(profilePageMatcher).authenticated()
+
 
                         .anyRequest().authenticated()
                 )

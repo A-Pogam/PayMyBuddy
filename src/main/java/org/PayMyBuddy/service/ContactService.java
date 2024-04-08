@@ -1,7 +1,7 @@
 package org.PayMyBuddy.service;
 
 import org.PayMyBuddy.model.Contact;
-import org.PayMyBuddy.repository.ContactRepository;
+import org.PayMyBuddy.repository.ConnectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 public class ContactService {
 
     @Autowired
-    private ContactRepository contactRepository;
+    private ConnectionRepository contactRepository;
 
     public void addContact(String userEmail, String contactEmail) {
         Contact existingContact = contactRepository.findByUserEmailAndContactEmail(userEmail, contactEmail);
