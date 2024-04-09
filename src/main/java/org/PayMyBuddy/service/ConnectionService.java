@@ -7,12 +7,9 @@ import org.PayMyBuddy.repository.ConnectionRepository;
 import org.PayMyBuddy.repository.DBUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.nio.channels.AlreadyConnectedException;
-import java.sql.Connection;
 import java.util.List;
 import java.util.Optional;
 

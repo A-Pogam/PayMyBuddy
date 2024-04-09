@@ -3,7 +3,7 @@ package org.PayMyBuddy.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "connection")
+@Table(name = "contact")
 public class Contact {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
