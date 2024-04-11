@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class Contact {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long connectionId;
 
     private String userEmail; // user who want to add a contact
     private String contactEmail; // new contact to add

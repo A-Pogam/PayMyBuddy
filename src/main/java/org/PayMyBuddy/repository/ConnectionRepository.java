@@ -10,4 +10,6 @@ import java.util.List;
 public interface ConnectionRepository extends JpaRepository<Contact, Long> {
     List<Contact> findByUserEmail(String userEmail);
     Contact findByUserEmailAndContactEmail(String userEmail, String contactEmail);
+
+
 }

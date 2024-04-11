@@ -76,9 +76,8 @@
                 </thead>
                 <tbody>
                 <tr th:each="contact : ${contacts}">
-                    <td th:text="${contact.user.firstName}"></td>
-                    <td th:text="${contact.user.lastName}"></td>
-                    <td th:text="${contact.user.email}"></td>
+                    <td th:text="${contact.firstname}"></td>
+                    <td th:text="${contact.lastname}"></td>
                     <td th:text="${contact.contactEmail}"></td>
                 </tr>
                 </tbody>

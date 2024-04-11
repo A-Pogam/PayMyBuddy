@@ -14,10 +14,21 @@ import java.util.List;
 @Controller
 public class ProfileController {
 
+    @Autowired
+    private ConnectionService connectionService;
 
 
     @GetMapping("/profile")
-    public String profile() {
+    public String profile(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+
+        // Récupérer les informations de contact de l'utilisateur
+        List<Contact> connections = connectionService.getUserConnections(userEmail);
+
+        // Transmettre les informations de contact au modèle
+        model.addAttribute("contacts", connections);
+
         return "profile";
     }
 
