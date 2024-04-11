@@ -11,15 +11,15 @@ CREATE TABLE IF NOT EXISTS dbuser (
     balance DECIMAL(10, 2)
 );
 
-CREATE TABLE IF NOT EXISTS connection (
+CREATE TABLE IF NOT EXISTS contact (
     connection_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    fk_initializer_id INT NOT NULL,
-    fk_receiver_id INT NOT NULL,
+    user_email VARCHAR(100) NOT NULL,
+    contact_email VARCHAR(100) NOT NULL,
     starting_date DATETIME NOT NULL,
-    FOREIGN KEY (fk_initializer_id)
+    FOREIGN KEY (user_email)
         REFERENCES dbuser (id)
         ON DELETE NO ACTION ON UPDATE NO ACTION,
-    FOREIGN KEY (fk_receiver_id)
+    FOREIGN KEY (contact_email)
         REFERENCES dbuser (id)
         ON DELETE NO ACTION ON UPDATE NO ACTION
 );

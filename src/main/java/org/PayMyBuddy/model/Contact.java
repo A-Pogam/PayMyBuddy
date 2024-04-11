@@ -12,6 +12,15 @@ public class Contact {
     private String userEmail; // user who want to add a contact
     private String contactEmail; // new contact to add
 
+    private String firstname;
+    private String lastname;
+
+    public String getFirstname() { return firstname;}
+    public void setFirstname(String firstname) { this.firstname = firstname; }
+
+    public String getLastname() { return lastname;}
+    public void setLastname(String lastname) { this.lastname = lastname; }
+
 
     public String getUserEmail() {
         return userEmail;

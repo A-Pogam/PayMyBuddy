@@ -37,10 +37,16 @@ public class ConnectionService {
         DBUser contact = userRepository.findByEmail(contactEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("L'utilisateur de contact n'a pas été trouvé."));
 
+        // Récupérer le prénom et le nom des utilisateurs
+        String contactFirstName = contact.getFirstname();
+        String contactLastName = contact.getLastname();
+
         // Créer une nouvelle connexion entre les deux utilisateurs
         Contact newConnection = new Contact();
         newConnection.setUserEmail(initializer.getEmail());
         newConnection.setContactEmail(contact.getEmail());
+        newConnection.setFirstname(contactFirstName);
+        newConnection.setLastname(contactLastName);
 
         return connectionRepository.save(newConnection);
     }

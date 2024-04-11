@@ -75,19 +75,15 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td></td>
-                    <td class="font-italic">No connections yet.</td>
-                    <td></td>
+                <tr th:each="contact : ${contacts}">
+                    <td th:text="${contact.user.firstName}"></td>
+                    <td th:text="${contact.user.lastName}"></td>
+                    <td th:text="${contact.user.email}"></td>
+                    <td th:text="${contact.contactEmail}"></td>
                 </tr>
-
                 </tbody>
-                <!-- th:if="${pagedList.totalElements == 0}"
-                tr th:each="connection : ${pagedList.content}">
-                    <td th:text="${connection.firstname}"></td>
-                    <td th:text="${connection.lastname}"></td>
-                    <td th:text="${connection.email}"></td>
-                </tr>-->
+
+
             </table>
         </div>
     </div>
