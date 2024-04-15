@@ -82,24 +82,28 @@
         <div class="row">
             <form id="send-money-body"
                   class="row bg-light d-flex justify-content-between align-items-center m-2 w-100">
-                <!-- th:action="@{/transfer/pay}" method="post" th:object="${transferForm}"> -->
                 <div class="col input-group">
                     <select class="form-select m-4" id="receiver" name="receiver" required>
                         <option value="">Select a connection</option>
                         <option th:each="contact : ${contacts}" th:value="${contact.contactEmail}" th:text="${contact.firstname + ' ' + contact.lastname}">
-                                <!-- Display the entire name of the receiver -->
                         </option>
                     </select>
+                </div>
+                <div class="col input-group m-4">
+                    <label>
+                        <input type="text" placeholder="Description" id="description" name="description" th:value="${description}" required>
+                    </label>
                 </div>
                 <div class="col input-group m-4">
                     <label>
                         <input type="number" min="0.01" step="0.01" placeholder="0.00 €" id="amount" name="amount" th:value="${amount}" required>
                     </label>
                 </div>
+
                 <div class="col-auto m-4">
-                    <button class="btn btn-success" href="/pay" role="button"
+                    <button class="btn btn-success" role="button"
                             name="action" value="redirect">Pay
-                    </button> <!-- th:href="@{/transfer/pay}"-->
+                    </button>
                 </div>
             </form>
         </div>
@@ -115,25 +119,13 @@
                 <th scope="col">Amount</th>
             </tr>
             </thead>
-            <!-- <tbody>
-            <tr th:each="transaction : ${pagedList.content}">
-                <td th:text="((${transaction.issuer.getEmail()} == ${user.getEmail()}) ? ${transaction.payee.getFirstname()} : ${transaction.issuer.getFirstname()})">Haley</td>
-                <td th:text="${transaction.description}">Restaurant bill share</td>
-                <td th:text="${#strings.replace(#numbers.formatCurrency(transaction.amount), ',00', '')}">10 €</td>
+            <tbody>
+            <tr th:each="transaction : ${transactions}">
+                <td th:text="${transaction.receiverFirstName} + ' ' + ${transaction.receiverLastName}"></td>
+                <td th:text="${transaction.description}"></td>
+                <td th:text="${transaction.amount}"></td>
             </tr>
-            </tr>
-            <tr th:each="transaction : ${pagedList.content}">
-                <td th:text="((${transaction.issuer.getEmail()} == ${user.getEmail()}) ? ${transaction.payee.getFirstname()} : ${transaction.issuer.getFirstname()})">Clara</td>
-                <td th:text="${transaction.description}">Trip Money</td>
-                <td th:text="${#strings.replace(#numbers.formatCurrency(transaction.amount), ',00', '')}">25 €</td>
-            </tr>
-            <tr th:each="transaction : ${pagedList.content}">
-                <td th:text="((${transaction.issuer.getEmail()} == ${user.getEmail()}) ? ${transaction.payee.getFirstname()} : ${transaction.issuer.getFirstname()})">Smith</td>
-                <td th:text="${transaction.description}">Movie Tickets</td>
-                <td th:text="${#strings.replace(#numbers.formatCurrency(transaction.amount), ',00', '')}">8 €</td>
-            </tr>
-            </tr>
-            </tbody> -->
+            </tbody>
         </table>
     </div>
     <nav aria-label="Page navigation example">
@@ -157,7 +149,6 @@
             </li>
         </ul>
     </nav>
-    <!-- <nav id="transaction-pagination" th:insert="fragments/pagination :: nav"></nav> -->
 </main>
 </body>
 </html>

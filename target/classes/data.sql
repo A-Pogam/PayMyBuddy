@@ -6,4 +6,4 @@ INSERT INTO dbuser (id, email, password, role) VALUES
 
 INSERT INTO `connection` (`connection_id`, `fk_initializer_id`, `fk_receiver_id`, `starting_date`) VALUES
 
-INSERT INTO `transaction` (`transaction_id`, `fk_issuer_id`, `fk_payee_id`, `date`, `amount`, `description`) VALUES
+INSERT INTO `transaction` (transactionId, senderId, receiverId, date, amount, description, receiverFirstName, receiverLastName) VALUES

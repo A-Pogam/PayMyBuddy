@@ -1,52 +1,51 @@
 package org.PayMyBuddy.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name="transaction")
 public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long transactionId;
+    @Column(name = "transaction_id")
+    private Integer transaction_id;
 
-    private String senderEmail;
-    private String receiverEmail;
+    private Integer sender_id;
+    private Integer receiver_id;
     private LocalDateTime date;
     private BigDecimal amount;
     private String description;
-    private String senderFirstName;
-    private String senderLastName;
+    private String receiver_first_name;
+    private String receiver_last_name;
 
 
 
-    public Long getTransactionId() {
-        return transactionId;
+    public Integer getTransaction_id() {
+        return transaction_id;
     }
 
-    public void setTransactionId(Long transactionId) {
-        this.transactionId = transactionId;
+    public void setTransaction_id(Integer transaction_id) {
+        this.transaction_id = transaction_id;
     }
 
-    public String getSenderEmail() {
-        return senderEmail;
+    public Integer getSender_id() {
+        return sender_id;
     }
 
-    public void setSenderEmail(String senderEmail) {
-        this.senderEmail = senderEmail;
+    public void setSender_id(Integer sender_id) {
+        this.sender_id = sender_id;
     }
 
-    public String getReceiverEmail() {
-        return receiverEmail;
+    public Integer getReceiver_id() {
+        return receiver_id;
     }
 
-    public void setReceiverEmail(String receiverEmail) {
-        this.receiverEmail = receiverEmail;
+    public void setReceiver_id(Integer receiver_id) {
+        this.receiver_id = receiver_id;
     }
 
     public LocalDateTime getDate() {
@@ -73,19 +72,23 @@ public class Transaction {
         this.description = description;
     }
 
-    public String getSenderFirstName() {
-        return senderFirstName;
+    public String getReceiver_first_name() {
+        return receiver_first_name;
     }
 
-    public void setSenderFirstName(String senderFirstName) {
-        this.senderFirstName = senderFirstName;
+    public void setReceiver_first_name(String receiverFirstName) {
+        this.receiver_first_name = receiver_first_name;
     }
 
-    public String getSenderLastName() {
-        return senderLastName;
+    public String getReceiver_last_name() {
+        return receiver_last_name;
     }
 
-    public void setSenderLastName(String senderLastName) {
-        this.senderLastName = senderLastName;
-    }}
+    public void setReceiver_last_name(String receiver_last_name) {
+        this.receiver_last_name = receiver_last_name;
+    }
+
+
+}
+
 

@@ -13,9 +13,11 @@ CREATE TABLE IF NOT EXISTS dbuser (
 
 CREATE TABLE IF NOT EXISTS contact (
     connection_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    user_email VARCHAR(100) NOT NULL,
-    contact_email VARCHAR(100) NOT NULL,
-    starting_date DATETIME NOT NULL,
+    user_Email VARCHAR(100) NOT NULL,
+    contact_Email VARCHAR(100) NOT NULL,
+    firstname VARCHAR(100) NOT NULL,
+    lastname VARCHAR(100) NOT NULL,
+
     FOREIGN KEY (user_email)
         REFERENCES dbuser (id)
         ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -25,16 +27,18 @@ CREATE TABLE IF NOT EXISTS contact (
 );
 
 CREATE TABLE IF NOT EXISTS transaction (
-    transaction_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    fk_issuer_id INT NOT NULL,
-    fk_payee_id INT NOT NULL,
+    transactionId INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    senderId INT NOT NULL,
+    receiverId INT NOT NULL,
     date DATETIME NOT NULL,
     amount DECIMAL(10, 2) NOT NULL,
     description VARCHAR(140),
-    FOREIGN KEY (fk_issuer_id)
+    receiverFirstName VARCHAR (100),
+    receiverLastName VARCHAR (100),
+    FOREIGN KEY (senderId)
         REFERENCES dbuser (id)
         ON DELETE NO ACTION ON UPDATE NO ACTION,
-    FOREIGN KEY (fk_payee_id)
+    FOREIGN KEY (receiverId)
         REFERENCES dbuser (id)
         ON DELETE NO ACTION ON UPDATE NO ACTION
 );
