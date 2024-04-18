@@ -80,15 +80,15 @@
         </div>
         <!--select connection, amount and Pay button-->
         <div class="row">
-            <form id="send-money-body"
-                  class="row bg-light d-flex justify-content-between align-items-center m-2 w-100">
-                <div class="col input-group">
-                    <select class="form-select m-4" id="receiver" name="receiver" required>
+            <form id="send-money-body" th:action="@{/transfer}" method="post" class="row bg-light d-flex justify-content-between align-items-center m-2 w-100">
+            <div class="col input-group">
+                    <select class="form-select m-4" id="receiverEmail" name="receiverEmail" required>
                         <option value="">Select a connection</option>
                         <option th:each="contact : ${contacts}" th:value="${contact.contactEmail}" th:text="${contact.firstname + ' ' + contact.lastname}">
                         </option>
                     </select>
-                </div>
+
+            </div>
                 <div class="col input-group m-4">
                     <label>
                         <input type="text" placeholder="Description" id="description" name="description" th:value="${description}" required>
@@ -99,7 +99,8 @@
                         <input type="number" min="0.01" step="0.01" placeholder="0.00 €" id="amount" name="amount" th:value="${amount}" required>
                     </label>
                 </div>
-
+                <input type="hidden" id="transaction_id" name="transaction_id" value="1">
+                <input type="hidden" id="sender_email" name="sender_email" value="1">
                 <div class="col-auto m-4">
                     <button class="btn btn-success" role="button"
                             name="action" value="redirect">Pay
@@ -114,14 +115,16 @@
         <table id="transactions-table" class="table table-striped text-center">
             <thead class="bg-success">
             <tr class="text-white">
-                <th scope="col">Connections</th>
+                <th scope="col">Contact</th>
                 <th scope="col">Description</th>
                 <th scope="col">Amount</th>
             </tr>
             </thead>
             <tbody>
+            <tr th:each="contact : ${contacts}" th:value="${contact.contactEmail}">
+            <td th:text="${contact.firstname + ' ' + contact.lastname}"></td>
+            <td>
             <tr th:each="transaction : ${transactions}">
-                <td th:text="${transaction.receiverFirstName} + ' ' + ${transaction.receiverLastName}"></td>
                 <td th:text="${transaction.description}"></td>
                 <td th:text="${transaction.amount}"></td>
             </tr>

@@ -16,11 +16,9 @@ public class Transaction {
 
     private Integer sender_id;
     private Integer receiver_id;
-    private LocalDateTime date;
     private BigDecimal amount;
     private String description;
-    private String receiver_first_name;
-    private String receiver_last_name;
+
 
 
 
@@ -48,13 +46,6 @@ public class Transaction {
         this.receiver_id = receiver_id;
     }
 
-    public LocalDateTime getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
 
     public BigDecimal getAmount() {
         return amount;
@@ -71,23 +62,6 @@ public class Transaction {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    public String getReceiver_first_name() {
-        return receiver_first_name;
-    }
-
-    public void setReceiver_first_name(String receiverFirstName) {
-        this.receiver_first_name = receiver_first_name;
-    }
-
-    public String getReceiver_last_name() {
-        return receiver_last_name;
-    }
-
-    public void setReceiver_last_name(String receiver_last_name) {
-        this.receiver_last_name = receiver_last_name;
-    }
-
 
 }
 

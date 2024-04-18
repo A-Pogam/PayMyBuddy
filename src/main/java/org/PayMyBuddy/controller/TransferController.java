@@ -14,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import java.time.LocalDateTime;
 
 
 import java.math.BigDecimal;
@@ -56,23 +55,37 @@ public class TransferController {
     }
 
 
-
     @PostMapping("/transfer")
     public String performTransfer(@RequestParam Integer transaction_id,
-                                  @RequestParam Integer sender_id,
-                                  @RequestParam Integer receiver_id,
+                                  @RequestParam String receiverEmail,
                                   @RequestParam String description,
-                                  @RequestParam LocalDateTime date,
-                                  @RequestParam BigDecimal amount,
-                                  @RequestParam String receiver_first_name,
-                                  @RequestParam String receiver_last_name) {
+                                  @RequestParam BigDecimal amount) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String senderEmail = authentication.getName();
 
+        // Récupérer l'ID de l'utilisateur expéditeur à partir de son email
+        Optional<DBUser> senderOptional = dbUserRepository.findByEmail(senderEmail);
+        if (senderOptional.isEmpty()) {
+            // Gérer le cas où l'utilisateur expéditeur n'est pas trouvé
+            throw new RuntimeException("Sender not found");
+        }
+        Integer senderId = senderOptional.get().getId();
+
+        // Récupérer l'ID de l'utilisateur destinataire à partir de son email
+        Optional<DBUser> receiverOptional = dbUserRepository.findByEmail(receiverEmail);
+        if (receiverOptional.isEmpty()) {
+            // Gérer le cas où l'utilisateur destinataire n'est pas trouvé
+            throw new RuntimeException("Receiver not found");
+        }
+        Integer receiverId = receiverOptional.get().getId();
+
         // Appeler la méthode transferMoney avec les identifiants et les autres paramètres
-        transferService.transferMoney(transaction_id, sender_id, receiver_id, description, date, amount, receiver_first_name, receiver_last_name);
+        transferService.transferMoney(transaction_id, senderId, receiverId, description, amount);
         return "redirect:/transfer?success=Transfer successful";
     }
+
+
+
 
 
 

@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +20,7 @@ public class TransferService {
     @Autowired
     private TransactionRepository transactionRepository;
 
-    public void transferMoney(Integer transaction_id, Integer sender_id, Integer receiver_id, String description, LocalDateTime date, BigDecimal amount, String receiver_first_name, String receiver_last_name) {
+    public void transferMoney(Integer transaction_id, Integer sender_id, Integer receiver_id, String description, BigDecimal amount) {
         // Récupérer l'utilisateur expéditeur de la base de données
         Optional<DBUser> senderOptional = dbUserRepository.findById(sender_id);
         if (senderOptional.isEmpty()) {
@@ -51,10 +50,7 @@ public class TransferService {
         dbUserRepository.save(sender);
 
         // Mettre à jour la balance du destinataire
-        BigDecimal receiverBalance = receiver.getBalance();
-        BigDecimal newReceiverBalance = receiverBalance.add(amount);
-        receiver.setBalance(newReceiverBalance);
-        dbUserRepository.save(receiver);
+        updateReceiverBalance(receiver, amount);
 
         // Enregistrer la transaction dans la base de données
         Transaction transaction = new Transaction();
@@ -62,18 +58,26 @@ public class TransferService {
         transaction.setSender_id(sender_id);
         transaction.setReceiver_id(receiver_id);
         transaction.setDescription(description);
-        transaction.setDate(date);
         transaction.setAmount(amount);
-        transaction.setReceiver_first_name(receiver_first_name);
-        transaction.setReceiver_last_name(receiver_last_name);
         transactionRepository.save(transaction);
+    }
+
+    private void updateReceiverBalance(DBUser receiver, BigDecimal amount) {
+        BigDecimal receiverBalance = receiver.getBalance();
+        if (receiverBalance == null) {
+            receiverBalance = BigDecimal.ZERO; // Initialiser la balance à zéro si elle est nulle
+        }
+        BigDecimal newReceiverBalance = receiverBalance.add(amount);
+        receiver.setBalance(newReceiverBalance);
+        dbUserRepository.save(receiver);
     }
 
 
     public List<Transaction> getUserTransactions(Long userId) {
-        // Récupérez les transactions de l'utilisateur à partir de la base de données
-        Integer userIdAsInteger = userId.intValue();
-        return transactionRepository.findBySenderIdOrReceiverId(userIdAsInteger, userIdAsInteger);
+        // Récupérer les transactions de l'utilisateur à partir de son ID
+        return transactionRepository.findBySenderIdOrReceiverId(userId.intValue(), userId.intValue());
     }
+
+
 
 }
