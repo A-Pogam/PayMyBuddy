@@ -60,7 +60,6 @@ public class ConnectionService {
     }
 
     private boolean isValidEmail(String email) {
-        // Implémentez la logique de validation de l'email si nécessaire
         return email != null && !email.isEmpty();
     }
 }

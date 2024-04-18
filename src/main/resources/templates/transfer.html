@@ -121,9 +121,6 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="contact : ${contacts}" th:value="${contact.contactEmail}">
-            <td th:text="${contact.firstname + ' ' + contact.lastname}"></td>
-            <td>
             <tr th:each="transaction : ${transactions}">
                 <td th:text="${transaction.description}"></td>
                 <td th:text="${transaction.amount}"></td>

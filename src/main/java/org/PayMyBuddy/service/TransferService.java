@@ -20,7 +20,7 @@ public class TransferService {
     @Autowired
     private TransactionRepository transactionRepository;
 
-    public void transferMoney(Integer transaction_id, Integer sender_id, Integer receiver_id, String description, BigDecimal amount) {
+    public void transferMoney(Integer sender_id, Integer receiver_id, String description, BigDecimal amount) {
         // Récupérer l'utilisateur expéditeur de la base de données
         Optional<DBUser> senderOptional = dbUserRepository.findById(sender_id);
         if (senderOptional.isEmpty()) {
@@ -54,7 +54,6 @@ public class TransferService {
 
         // Enregistrer la transaction dans la base de données
         Transaction transaction = new Transaction();
-        transaction.setTransaction_id(transaction_id);
         transaction.setSender_id(sender_id);
         transaction.setReceiver_id(receiver_id);
         transaction.setDescription(description);
@@ -74,7 +73,6 @@ public class TransferService {
 
 
     public List<Transaction> getUserTransactions(Long userId) {
-        // Récupérer les transactions de l'utilisateur à partir de son ID
         return transactionRepository.findBySenderIdOrReceiverId(userId.intValue(), userId.intValue());
     }
 

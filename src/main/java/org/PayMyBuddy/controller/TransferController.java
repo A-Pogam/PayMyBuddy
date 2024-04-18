@@ -56,8 +56,7 @@ public class TransferController {
 
 
     @PostMapping("/transfer")
-    public String performTransfer(@RequestParam Integer transaction_id,
-                                  @RequestParam String receiverEmail,
+    public String performTransfer(@RequestParam String receiverEmail,
                                   @RequestParam String description,
                                   @RequestParam BigDecimal amount) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -80,7 +79,7 @@ public class TransferController {
         Integer receiverId = receiverOptional.get().getId();
 
         // Appeler la méthode transferMoney avec les identifiants et les autres paramètres
-        transferService.transferMoney(transaction_id, senderId, receiverId, description, amount);
+        transferService.transferMoney(senderId, receiverId, description, amount);
         return "redirect:/transfer?success=Transfer successful";
     }
 
