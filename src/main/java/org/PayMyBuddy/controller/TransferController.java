@@ -5,6 +5,7 @@ import org.PayMyBuddy.model.DBUser;
 import org.PayMyBuddy.model.Transaction;
 import org.PayMyBuddy.repository.DBUserRepository;
 import org.PayMyBuddy.service.ConnectionService;
+import org.PayMyBuddy.service.ContactService;
 import org.PayMyBuddy.service.TransferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -30,6 +31,10 @@ public class TransferController {
 
     @Autowired
     private DBUserRepository dbUserRepository;
+
+
+    @Autowired
+    private ContactService contactService;
 
     @GetMapping("/transfer")
     public String transfer(Model model) {
@@ -58,7 +63,8 @@ public class TransferController {
     @PostMapping("/transfer")
     public String performTransfer(@RequestParam String receiverEmail,
                                   @RequestParam String description,
-                                  @RequestParam BigDecimal amount) {
+                                  @RequestParam BigDecimal amount,
+                                  Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String senderEmail = authentication.getName();
 
@@ -68,6 +74,7 @@ public class TransferController {
             // Gérer le cas où l'utilisateur expéditeur n'est pas trouvé
             throw new RuntimeException("Sender not found");
         }
+        DBUser sender = senderOptional.get();
         Integer senderId = senderOptional.get().getId();
 
         // Récupérer l'ID de l'utilisateur destinataire à partir de son email
@@ -80,8 +87,14 @@ public class TransferController {
 
         // Appeler la méthode transferMoney avec les identifiants et les autres paramètres
         transferService.transferMoney(senderId, receiverId, description, amount);
+
+        // Ajouter le prénom et le nom de l'expéditeur au modèle
+        model.addAttribute("senderFirstName", sender.getFirstname());
+        model.addAttribute("senderLastName", sender.getLastname());
         return "redirect:/transfer?success=Transfer successful";
     }
+
+
 
 
 

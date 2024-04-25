@@ -49,7 +49,7 @@ public class TransferService {
         BigDecimal finalAmount = amount.subtract(feeAmount);
 
         // Déduire le montant de la balance de l'expéditeur
-        BigDecimal newSenderBalance = senderBalance.subtract(finalAmount); 
+        BigDecimal newSenderBalance = senderBalance.subtract(finalAmount);
         sender.setBalance(newSenderBalance);
         dbUserRepository.save(sender);
 
@@ -81,6 +81,9 @@ public class TransferService {
         return transactionRepository.findBySenderIdOrReceiverId(userId.intValue(), userId.intValue());
     }
 
+    public List<Transaction> getAllTransactions() {
+        return transactionRepository.findAll();
+    }
 
 
 }

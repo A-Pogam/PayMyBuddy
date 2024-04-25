@@ -115,13 +115,16 @@
         <table id="transactions-table" class="table table-striped text-center">
             <thead class="bg-success">
             <tr class="text-white">
-                <th scope="col">Contact</th>
+                <th scope="col">Connections</th>
                 <th scope="col">Description</th>
                 <th scope="col">Amount</th>
             </tr>
             </thead>
+
+
             <tbody>
             <tr th:each="transaction : ${transactions}">
+                <td th:text="${senderFirstName + ' ' + senderLastName}"></td>
                 <td th:text="${transaction.description}"></td>
                 <td th:text="${transaction.amount}"></td>
             </tr>
