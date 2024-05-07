@@ -1,15 +1,17 @@
 package org.PayMyBuddy.service;
 
+import org.PayMyBuddy.model.Contact;
 import org.PayMyBuddy.model.DBUser;
 import org.PayMyBuddy.model.Transaction;
 import org.PayMyBuddy.repository.DBUserRepository;
 import org.PayMyBuddy.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TransferService {
@@ -20,70 +22,71 @@ public class TransferService {
     @Autowired
     private TransactionRepository transactionRepository;
 
-    public void transferMoney(Integer sender_id, Integer receiver_id, String description, BigDecimal amount) {
-        // Récupérer l'utilisateur expéditeur de la base de données
-        Optional<DBUser> senderOptional = dbUserRepository.findById(sender_id);
-        if (senderOptional.isEmpty()) {
-            throw new RuntimeException("Sender not found");
-        }
-        DBUser sender = senderOptional.get();
+    @Autowired
+    private ConnectionService connectionService;
 
-        // Récupérer l'utilisateur destinataire de la base de données
-        Optional<DBUser> receiverOptional = dbUserRepository.findById(receiver_id);
-        if (receiverOptional.isEmpty()) {
-            throw new RuntimeException("Receiver not found");
-        }
-        DBUser receiver = receiverOptional.get();
 
-        // Vérifier si l'expéditeur a suffisamment de fonds pour effectuer la transaction
+    public void transferMoney(String senderEmail, String receiverEmail, String description, BigDecimal amount, Model model) {
+        DBUser sender = dbUserRepository.findByEmail(senderEmail).orElseThrow(() -> new RuntimeException("Sender not found"));
+        DBUser receiver = dbUserRepository.findByEmail(receiverEmail).orElseThrow(() -> new RuntimeException("Receiver not found"));
+
         BigDecimal senderBalance = sender.getBalance();
         if (senderBalance.compareTo(amount) < 0) {
             throw new RuntimeException("Insufficient funds");
         }
 
-        // Calculer le montant du prélèvement (0,5 %)
-        BigDecimal feePercentage = BigDecimal.valueOf(0.5);
-        BigDecimal feeAmount = amount.multiply(feePercentage.divide(BigDecimal.valueOf(100)));
-
-        // Calculer le montant final à transférer au destinataire (montant de la transaction - montant du prélèvement)
-        BigDecimal finalAmount = amount.subtract(feeAmount);
-
-        // Déduire le montant de la balance de l'expéditeur
-        BigDecimal newSenderBalance = senderBalance.subtract(finalAmount);
-        sender.setBalance(newSenderBalance);
-        dbUserRepository.save(sender);
-
-        // Mettre à jour la balance du destinataire
+        BigDecimal finalAmount = calculateFinalAmount(amount);
+        updateSenderBalance(sender, finalAmount.negate());
         updateReceiverBalance(receiver, finalAmount);
 
-        // Enregistrer la transaction dans la base de données
-        Transaction transaction = new Transaction();
-        transaction.setSender_id(sender_id);
-        transaction.setReceiver_id(receiver_id);
-        transaction.setDescription(description);
-        transaction.setAmount(finalAmount);
-        transactionRepository.save(transaction);
+        saveTransaction(sender.getId(), receiver.getId(), description, finalAmount);
+        model.addAttribute("senderFirstName", sender.getFirstname());
+        model.addAttribute("senderLastName", sender.getLastname());
     }
 
+    private BigDecimal calculateFinalAmount(BigDecimal amount) {
+        BigDecimal feePercentage = BigDecimal.valueOf(0.5);
+        BigDecimal feeAmount = amount.multiply(feePercentage.divide(BigDecimal.valueOf(100)));
+        return amount.subtract(feeAmount);
+    }
+
+    private void updateSenderBalance(DBUser sender, BigDecimal amount) {
+        BigDecimal newSenderBalance = sender.getBalance().subtract(amount);
+        sender.setBalance(newSenderBalance);
+        dbUserRepository.save(sender);
+    }
 
     private void updateReceiverBalance(DBUser receiver, BigDecimal amount) {
-        BigDecimal receiverBalance = receiver.getBalance();
-        if (receiverBalance == null) {
-            receiverBalance = BigDecimal.ZERO; // Initialiser la balance à zéro si elle est nulle
-        }
-        BigDecimal newReceiverBalance = receiverBalance.add(amount);
+        BigDecimal newReceiverBalance = receiver.getBalance().add(amount);
         receiver.setBalance(newReceiverBalance);
         dbUserRepository.save(receiver);
     }
 
-
-    public List<Transaction> getUserTransactions(Long userId) {
-        return transactionRepository.findBySenderIdOrReceiverId(userId.intValue(), userId.intValue());
+    private void saveTransaction(Integer senderId, Integer receiverId, String description, BigDecimal amount) {
+        Transaction transaction = new Transaction();
+        transaction.setSender_id(senderId);
+        transaction.setReceiver_id(receiverId);
+        transaction.setDescription(description);
+        transaction.setAmount(amount);
+        transactionRepository.save(transaction);
     }
 
-    public List<Transaction> getAllTransactions() {
-        return transactionRepository.findAll();
+    public List<Transaction> getUserTransactions(Integer userId) {
+        return transactionRepository.findBySenderIdOrReceiverId(userId, userId);
     }
 
+    public List<Contact> getUserConnections(String userEmail) {
+        return connectionService.getUserConnections(userEmail);
+    }
 
+    public DBUser getCurrentUser() {
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        return dbUserRepository.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    public Integer getCurrentUserId() {
+        return getCurrentUser().getId();
+    }
 }
+
+

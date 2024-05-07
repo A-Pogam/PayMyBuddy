@@ -124,7 +124,7 @@
 
             <tbody>
             <tr th:each="transaction : ${transactions}">
-                <td th:text="${senderFirstName + ' ' + senderLastName}"></td>
+                <td th:text="${senderFirstName + ' ' + senderLastName}"></td>          <!--ne reconnaît pas senderFrist/LastName -->
                 <td th:text="${transaction.description}"></td>
                 <td th:text="${transaction.amount}"></td>
             </tr>
