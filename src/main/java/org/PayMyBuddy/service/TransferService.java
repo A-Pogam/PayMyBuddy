@@ -5,6 +5,7 @@ import org.PayMyBuddy.model.DBUser;
 import org.PayMyBuddy.model.Transaction;
 import org.PayMyBuddy.repository.DBUserRepository;
 import org.PayMyBuddy.repository.TransactionRepository;
+import org.PayMyBuddy.service.contracts.ITransferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Service
-public class TransferService {
+public class TransferService implements ITransferService {
 
     @Autowired
     private DBUserRepository dbUserRepository;

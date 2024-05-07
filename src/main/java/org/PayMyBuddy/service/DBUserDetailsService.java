@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.PayMyBuddy.model.DBUser;
 import org.PayMyBuddy.repository.DBUserRepository;
+import org.PayMyBuddy.service.contracts.IDBUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DBUserDetailsService implements UserDetailsService {
+public class DBUserDetailsService implements IDBUserDetailsService {
 
     private final DBUserRepository dbUserRepository;
     private final ApplicationContext applicationContext;

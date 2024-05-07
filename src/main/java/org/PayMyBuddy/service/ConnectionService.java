@@ -5,6 +5,7 @@ import org.PayMyBuddy.model.Contact;
 import org.PayMyBuddy.model.DBUser;
 import org.PayMyBuddy.repository.ConnectionRepository;
 import org.PayMyBuddy.repository.DBUserRepository;
+import org.PayMyBuddy.service.contracts.IConnectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ConnectionService {
+public class ConnectionService implements IConnectionService {
 
     @Autowired
     private DBUserRepository userRepository;
