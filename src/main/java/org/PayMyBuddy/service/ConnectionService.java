@@ -62,5 +62,6 @@ public class ConnectionService {
     private boolean isValidEmail(String email) {
         return email != null && !email.isEmpty();
     }
+
 }
 
