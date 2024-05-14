@@ -1,22 +1,18 @@
 package org.PayMyBuddy.configuration;
 
-import org.PayMyBuddy.service.DBUserDetailsService;
+import org.PayMyBuddy.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
@@ -24,7 +20,7 @@ import javax.sql.DataSource;
 public class SecurityConfig {
 
     @Autowired
-    private DBUserDetailsService dbUserDetailsService;
+    private UserDetailsServiceImpl userDetailsService;
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -40,9 +36,7 @@ public class SecurityConfig {
         RequestMatcher updateBalancePageMatcher = new AntPathRequestMatcher("/update-balance");
         RequestMatcher profilePageMatcher = new AntPathRequestMatcher("/profile");
 
-
-        http
-                .authorizeRequests(authorizeRequests -> authorizeRequests
+        http.authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers(loginPageMatcher).permitAll()
                         .requestMatchers(homePageMatcher).authenticated()
                         .requestMatchers(transferPageMatcher).authenticated()
@@ -50,10 +44,7 @@ public class SecurityConfig {
                         .requestMatchers(ConnectionPageMatcher).authenticated()
                         .requestMatchers(updateBalancePageMatcher).authenticated()
                         .requestMatchers(profilePageMatcher).authenticated()
-
-
-                        .anyRequest().authenticated()
-                )
+                        .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .usernameParameter("email")
@@ -61,18 +52,15 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/home", true))
                 .rememberMe(rememberMeConfigurer -> rememberMeConfigurer
                         .userDetailsService(userDetailsService()))
-
-
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login")
                 );
+
         return http.build();
     }
 
-    protected UserDetailsService userDetailsService() {
-        return dbUserDetailsService;
+    protected UserDetailsServiceImpl userDetailsService() {
+        return userDetailsService;
     }
-
 }
-
