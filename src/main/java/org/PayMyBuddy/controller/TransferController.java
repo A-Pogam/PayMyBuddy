@@ -18,6 +18,7 @@ public class TransferController {
     @Autowired
     private TransferService transferService;
 
+    //Display transfer page
     @GetMapping("/transfer")
     public String transfer(Model model) {
         DBUser currentUser = transferService.getCurrentUser();
@@ -26,6 +27,7 @@ public class TransferController {
         return "transfer";
     }
 
+    //Doing the internal money transfer
     @PostMapping("/transfer")
     public String performTransfer(@RequestParam String receiverEmail,
                                   @RequestParam String description,
