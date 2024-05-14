@@ -19,4 +19,6 @@ public interface ITransferService {
     DBUser getCurrentUser();
 
     Integer getCurrentUserId();
+
+
 }

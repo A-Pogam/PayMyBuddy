@@ -89,6 +89,15 @@ public class TransferService implements ITransferService {
         return getCurrentUser().getId();
     }
 
+
+    public String getReceiverName(Integer receiverId) {
+        DBUser receiver = dbUserRepository.findById(receiverId)
+                .orElseThrow(() -> new RuntimeException("Receiver not found"));
+
+        return receiver.getFirstname() + " " + receiver.getLastname();
+    }
+
+
 }
 
 
