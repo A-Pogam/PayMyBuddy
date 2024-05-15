@@ -91,9 +91,11 @@ public class TransferService implements ITransferService {
 
 
     public String getReceiverName(Integer receiverId) {
+        // Récupérer l'utilisateur (destinataire) correspondant à l'ID
         DBUser receiver = dbUserRepository.findById(receiverId)
                 .orElseThrow(() -> new RuntimeException("Receiver not found"));
 
+        // Retourner le prénom et le nom du destinataire
         return receiver.getFirstname() + " " + receiver.getLastname();
     }
 
