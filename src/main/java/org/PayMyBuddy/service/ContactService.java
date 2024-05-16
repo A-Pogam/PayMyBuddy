@@ -2,10 +2,10 @@ package org.PayMyBuddy.service;
 
 import jakarta.transaction.Transactional;
 import org.PayMyBuddy.model.Contact;
-import org.PayMyBuddy.model.DBUser;
-import org.PayMyBuddy.repository.ConnectionRepository;
-import org.PayMyBuddy.repository.DBUserRepository;
-import org.PayMyBuddy.service.contracts.IConnectionService;
+import org.PayMyBuddy.model.User;
+import org.PayMyBuddy.repository.contracts.IContactRepository;
+import org.PayMyBuddy.repository.contracts.IUserRepository;
+import org.PayMyBuddy.service.contracts.IContactService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,13 +15,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ConnectionService implements IConnectionService {
+public class ContactService implements IContactService {
 
     @Autowired
-    private DBUserRepository userRepository;
+    private IUserRepository userRepository;
 
     @Autowired
-    private ConnectionRepository connectionRepository;
+    private IContactRepository connectionRepository;
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @Transactional
@@ -32,10 +32,10 @@ public class ConnectionService implements IConnectionService {
         }
 
         // Rechercher les utilisateurs correspondants dans la base de données
-        DBUser initializer = userRepository.findByEmail(initializerEmail)
+        User initializer = userRepository.findByEmail(initializerEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("L'utilisateur initiateur n'a pas été trouvé."));
 
-        DBUser contact = userRepository.findByEmail(contactEmail)
+        User contact = userRepository.findByEmail(contactEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("L'utilisateur de contact n'a pas été trouvé."));
 
         // Récupérer le prénom et le nom des utilisateurs
@@ -65,4 +65,3 @@ public class ConnectionService implements IConnectionService {
     }
 
 }
-

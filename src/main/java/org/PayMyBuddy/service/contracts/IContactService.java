@@ -5,7 +5,7 @@ import org.PayMyBuddy.model.Contact;
 import java.util.List;
 import java.util.Optional;
 
-public interface IConnectionService {
+public interface IContactService {
     Contact createConnectionBetweenTwoUsers(String initializerEmail, String contactEmail);
 
     List<Contact> getUserConnections(String userEmail);

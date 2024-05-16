@@ -1,10 +1,12 @@
+
 package org.PayMyBuddy.service;
 
 import java.util.Collections;
 import java.util.Optional;
 
-import org.PayMyBuddy.model.DBUser;
-import org.PayMyBuddy.repository.DBUserRepository;
+import org.PayMyBuddy.exception.PasswordNotFoundException;
+import org.PayMyBuddy.model.User;
+import org.PayMyBuddy.repository.contracts.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,11 +18,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-    private final DBUserRepository dbUserRepository;
+    private final IUserRepository dbUserRepository;
     private final ApplicationContext applicationContext;
 
     @Autowired
-    public UserDetailsServiceImpl(DBUserRepository dbUserRepository, ApplicationContext applicationContext) {
+    public UserDetailsServiceImpl(IUserRepository dbUserRepository, ApplicationContext applicationContext) {
         this.dbUserRepository = dbUserRepository;
         this.applicationContext = applicationContext;
     }
@@ -29,7 +31,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         PasswordEncoder passwordEncoder = applicationContext.getBean(PasswordEncoder.class);
 
-        Optional<DBUser> user = dbUserRepository.findByEmail(username);
+        Optional<User> user = dbUserRepository.findByEmail(username);
         if (user.isEmpty()) {
             throw new UsernameNotFoundException("Email " + username + " does not match any user.");
         }
