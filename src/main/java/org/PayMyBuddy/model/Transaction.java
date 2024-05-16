@@ -1,9 +1,16 @@
 package org.PayMyBuddy.model;
 
-import jakarta.persistence.*;
-
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name="transaction")
@@ -14,14 +21,20 @@ public class Transaction {
     @Column(name = "transaction_id")
     private Integer transaction_id;
 
-    private Integer sender_id;
-    private Integer receiver_id;
+    @NotNull
+    @ManyToOne()
+    @JoinColumn(name = "sender_id")
+    private User sender_id;
+    @NotNull
+    @ManyToOne()
+    @JoinColumn(name = "receiver_id")
+    private User receiver_id;
+
+    @NotNull
+    @Column(name = "amount")
     private BigDecimal amount;
+    @Column(name = "description")
     private String description;
-
-
-
-
 
     public Integer getTransaction_id() {
         return transaction_id;
@@ -31,22 +44,21 @@ public class Transaction {
         this.transaction_id = transaction_id;
     }
 
-    public Integer getSender_id() {
+    public User getSender_id() {
         return sender_id;
     }
 
-    public void setSender_id(Integer sender_id) {
+    public void setSender_id(User sender_id) {
         this.sender_id = sender_id;
     }
 
-    public Integer getReceiver_id() {
+    public User getReceiver_id() {
         return receiver_id;
     }
 
-    public void setReceiver_id(Integer receiver_id) {
+    public void setReceiver_id(User receiver_id) {
         this.receiver_id = receiver_id;
     }
-
 
     public BigDecimal getAmount() {
         return amount;
@@ -63,7 +75,4 @@ public class Transaction {
     public void setDescription(String description) {
         this.description = description;
     }
-
 }
-
-

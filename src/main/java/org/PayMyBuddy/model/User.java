@@ -1,28 +1,41 @@
 package org.PayMyBuddy.model;
 
+import java.math.BigDecimal;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
-import java.math.BigDecimal;
+import jakarta.validation.constraints.NotNull;
 
 
 @Entity
-@Table(name="dbuser")
-public class DBUser {
+@Table(name="user")
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @NotNull
+    @Column(name = "email", unique = true)
     private String email;
+    @Column(name = "password")
     private String password;
 
+    @NotNull
+    @Column(name = "firstname")
     private String firstname;
+    @NotNull
+    @Column(name = "lastname")
     private String lastname;
 
+    @NotNull
+    @Column(name = "role")
     private String role;
 
+    @NotNull
+    @Column(name = "balance", columnDefinition = "decimal(38,2) default 0")
     private BigDecimal balance;
 
     public Integer getId() {
