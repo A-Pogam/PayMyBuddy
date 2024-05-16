@@ -1,7 +1,7 @@
 package org.PayMyBuddy.controller;
 
 import org.PayMyBuddy.model.Contact;
-import org.PayMyBuddy.service.ConnectionService;
+import org.PayMyBuddy.service.ContactService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,7 +15,7 @@ import java.util.List;
 public class ProfileController {
 
     @Autowired
-    private ConnectionService connectionService;
+    private ContactService connectionService;
 
 
     @GetMapping("/profile")

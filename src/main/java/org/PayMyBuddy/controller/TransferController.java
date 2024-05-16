@@ -1,7 +1,7 @@
 package org.PayMyBuddy.controller;
 
-import org.PayMyBuddy.model.DBUser;
-import org.PayMyBuddy.service.TransferService;
+import org.PayMyBuddy.model.User;
+import org.PayMyBuddy.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -16,12 +16,12 @@ import java.math.BigDecimal;
 public class TransferController {
 
     @Autowired
-    private TransferService transferService;
+    private TransactionService transferService;
 
     //Display transfer page
     @GetMapping("/transfer")
     public String transfer(Model model) {
-        DBUser currentUser = transferService.getCurrentUser();
+        User currentUser = transferService.getCurrentUser();
         model.addAttribute("contacts", transferService.getUserConnections(currentUser.getEmail()));
         model.addAttribute("transactions", transferService.getUserTransactions(currentUser.getId()));
         return "transfer";
