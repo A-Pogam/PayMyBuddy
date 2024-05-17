@@ -6,9 +6,9 @@ import java.util.List;
 import org.PayMyBuddy.model.Transaction;
 import org.PayMyBuddy.model.User;
 import org.PayMyBuddy.repository.contracts.ITransactionRepository;
-import org.PayMyBuddy.repository.contracts.IUserRepository;
 import org.PayMyBuddy.service.contracts.IContactService;
 import org.PayMyBuddy.service.contracts.ITransactionService;
+import org.PayMyBuddy.service.contracts.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import org.springframework.ui.Model;
 public class TransactionService implements ITransactionService {
 
     @Autowired
-    private IUserRepository dbUserRepository;
+    private IUserService iUserService;
 
     @Autowired
     private ITransactionRepository transactionRepository;
@@ -27,8 +27,8 @@ public class TransactionService implements ITransactionService {
     private IContactService iContactService;
 
     public void transferMoney(String senderEmail, String receiverEmail, String description, BigDecimal amount, Model model) {
-        User sender = dbUserRepository.findByEmail(senderEmail).orElseThrow(() -> new RuntimeException("Sender not found"));
-        User receiver = dbUserRepository.findByEmail(receiverEmail).orElseThrow(() -> new RuntimeException("Receiver not found"));
+        User sender = iUserService.findByEmail(senderEmail).orElseThrow(() -> new RuntimeException("Sender not found"));
+        User receiver = iUserService.findByEmail(receiverEmail).orElseThrow(() -> new RuntimeException("Receiver not found"));
 
         BigDecimal senderBalance = sender.getBalance();
         if (senderBalance.compareTo(amount) < 0) {
@@ -53,14 +53,15 @@ public class TransactionService implements ITransactionService {
     private void updateSenderBalance(User sender, BigDecimal amount) {
         BigDecimal newSenderBalance = sender.getBalance().subtract(amount);
         sender.setBalance(newSenderBalance);
-        dbUserRepository.save(sender);
+        iUserService.updateUser(sender);
     }
 
     private void updateReceiverBalance(User receiver, BigDecimal amount) {
         BigDecimal newReceiverBalance = receiver.getBalance().add(amount);
         receiver.setBalance(newReceiverBalance);
-        dbUserRepository.save(receiver);
+        iUserService.updateUser(receiver);
     }
+
 
     private void saveTransaction(User senderId, User receiverId, String description, BigDecimal amount) {
         Transaction transaction = new Transaction();
@@ -81,7 +82,7 @@ public class TransactionService implements ITransactionService {
 
     public User getCurrentUser() {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        return dbUserRepository.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("User not found"));
+        return iUserService.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     public Integer getCurrentUserId() {
@@ -89,12 +90,10 @@ public class TransactionService implements ITransactionService {
     }
 
 
-    public String getReceiverName(Integer receiverId) {
-        // Récupérer l'utilisateur (destinataire) correspondant à l'ID
-        User receiver = dbUserRepository.findById(receiverId)
+public String getReceiverName(int receiverId) {
+        User receiver = iUserService.findById(receiverId)
                 .orElseThrow(() -> new RuntimeException("Receiver not found"));
 
-        // Retourner le prénom et le nom du destinataire
         return receiver.getFirstname() + " " + receiver.getLastname();
     }
 }
