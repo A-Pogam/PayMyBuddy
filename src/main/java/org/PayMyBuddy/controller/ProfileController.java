@@ -14,20 +14,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class ProfileController {
 
-    @Autowired
-    private IContactService iContactService;
 
     @GetMapping("/profile")
-    public String profile(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = authentication.getName();
-
-        // Récupérer les informations de contact de l'utilisateur
-        List<User> connections = iContactService.getUserConnections(userEmail);
-
-        // Transmettre les informations de contact au modèle
-        model.addAttribute("contacts", connections);
-
+    public String profil() {
         return "profile";
     }
 }
