@@ -1,18 +1,18 @@
 package org.PayMyBuddy.service;
 
-import org.PayMyBuddy.model.Contact;
-import org.PayMyBuddy.model.User;
+import java.math.BigDecimal;
+import java.util.List;
+
 import org.PayMyBuddy.model.Transaction;
-import org.PayMyBuddy.repository.contracts.IUserRepository;
+import org.PayMyBuddy.model.User;
 import org.PayMyBuddy.repository.contracts.ITransactionRepository;
+import org.PayMyBuddy.repository.contracts.IUserRepository;
+import org.PayMyBuddy.service.contracts.IContactService;
 import org.PayMyBuddy.service.contracts.ITransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
-
-import java.math.BigDecimal;
-import java.util.List;
 
 @Service
 public class TransactionService implements ITransactionService {
@@ -24,8 +24,7 @@ public class TransactionService implements ITransactionService {
     private ITransactionRepository transactionRepository;
 
     @Autowired
-    private ContactService connectionService;
-
+    private IContactService iContactService;
 
     public void transferMoney(String senderEmail, String receiverEmail, String description, BigDecimal amount, Model model) {
         User sender = dbUserRepository.findByEmail(senderEmail).orElseThrow(() -> new RuntimeException("Sender not found"));
@@ -76,8 +75,8 @@ public class TransactionService implements ITransactionService {
         return transactionRepository.findBySenderIdOrReceiverId(userId, userId);
     }
 
-    public List<Contact> getUserConnections(String userEmail) {
-        return connectionService.getUserConnections(userEmail);
+    public List<User> getUserConnections(String userEmail) {
+        return iContactService.getUserConnections(userEmail);
     }
 
     public User getCurrentUser() {
@@ -98,6 +97,4 @@ public class TransactionService implements ITransactionService {
         // Retourner le prénom et le nom du destinataire
         return receiver.getFirstname() + " " + receiver.getLastname();
     }
-
-
 }

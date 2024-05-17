@@ -1,6 +1,6 @@
 package org.PayMyBuddy.controller;
 
-import org.PayMyBuddy.service.ContactService;
+import org.PayMyBuddy.service.contracts.IContactService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,8 +12,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class ConnectionController {
+
     @Autowired
-    private ContactService connectionService;
+    IContactService iContactService;
 
     @GetMapping("/connection")
     public String addConnection() {
@@ -27,7 +28,7 @@ public class ConnectionController {
         String initializerEmail = authentication.getName();
 
         // Créer la connexion entre l'utilisateur actuel et le nouveau contact
-        connectionService.createConnectionBetweenTwoUsers(initializerEmail, contactEmail);
+        iContactService.createConnectionBetweenTwoUsers(initializerEmail, contactEmail);
 
         // Rediriger avec un message de succès
         redirectAttributes.addFlashAttribute("successMessage", "Connection added successfully!");

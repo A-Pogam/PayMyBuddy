@@ -1,7 +1,9 @@
 package org.PayMyBuddy.controller;
 
+import java.math.BigDecimal;
+
 import org.PayMyBuddy.model.User;
-import org.PayMyBuddy.service.TransactionService;
+import org.PayMyBuddy.service.contracts.ITransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -10,20 +12,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.math.BigDecimal;
-
 @Controller
 public class TransferController {
 
     @Autowired
-    private TransactionService transferService;
+    private ITransactionService iTransactionService;
 
     //Display transfer page
     @GetMapping("/transfer")
     public String transfer(Model model) {
-        User currentUser = transferService.getCurrentUser();
-        model.addAttribute("contacts", transferService.getUserConnections(currentUser.getEmail()));
-        model.addAttribute("transactions", transferService.getUserTransactions(currentUser.getId()));
+        User currentUser = iTransactionService.getCurrentUser();
+        model.addAttribute("contacts", iTransactionService.getUserConnections(currentUser.getEmail()));
+        model.addAttribute("transactions", iTransactionService.getUserTransactions(currentUser.getId()));
         return "transfer";
     }
 
@@ -34,7 +34,7 @@ public class TransferController {
                                   @RequestParam BigDecimal amount,
                                   Model model) {
         String senderEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        transferService.transferMoney(senderEmail, receiverEmail, description, amount, model);
+        iTransactionService.transferMoney(senderEmail, receiverEmail, description, amount, model);
         return "redirect:/transfer?success=Transfer successful";
     }
 }
