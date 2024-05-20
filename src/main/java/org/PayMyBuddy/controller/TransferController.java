@@ -23,7 +23,7 @@ public class TransferController {
     public String transfer(Model model) {
         User currentUser = iTransactionService.getCurrentUser();
         model.addAttribute("contacts", iTransactionService.getUserConnections(currentUser.getEmail()));
-        model.addAttribute("transactions", iTransactionService.getUserTransactions(currentUser.getId()));
+        model.addAttribute("transactions", iTransactionService.getUserTransactions(currentUser));
         return "transfer";
     }
 

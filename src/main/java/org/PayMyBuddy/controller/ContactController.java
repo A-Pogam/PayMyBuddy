@@ -14,21 +14,21 @@ import java.util.List;
 @Controller
 public class ContactController {
 
-        @Autowired
-        private IContactService iContactService;
+    @Autowired
+    private IContactService iContactService;
 
-        @GetMapping("/contact")
-        public String contact(Model model){
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String userEmail = authentication.getName();
+    @GetMapping("/contact")
+    public String contact(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
 
-            // Récupérer les informations de contact de l'utilisateur
-            List<User> connections = iContactService.getUserConnections(userEmail);
+        // Récupérer les informations de contact de l'utilisateur
+        List<User> connections = iContactService.getUserConnections(userEmail);
 
-            // Transmettre les informations de contact au modèle
-            model.addAttribute("contact", connections);
+        // Transmettre les informations de contact au modèle
+        model.addAttribute("contact", connections);
 
-            return "contact";
+        return "contact";
 
-        }
+    }
 }

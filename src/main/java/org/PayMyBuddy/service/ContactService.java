@@ -2,7 +2,6 @@ package org.PayMyBuddy.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -27,6 +26,7 @@ public class ContactService implements IContactService {
     @Autowired
     private IContactRepository iContactRepository;
 
+    @Override
     @PreAuthorize("hasRole('ROLE_USER')")
     @Transactional
     public Contact createConnectionBetweenTwoUsers(String initializerEmail, String contactEmail) {
@@ -50,8 +50,9 @@ public class ContactService implements IContactService {
         return iContactRepository.save(newConnection);
     }
 
+    @Override
     public List<User> getUserConnections(String userEmail) {
-        int userId = iUserService.findByEmail(userEmail).get().getId();
+        Integer userId = iUserService.findByEmail(userEmail).get().getId();
         List<User> myContacts = new ArrayList<>();
         TreeMap<String, Integer> contacts = new TreeMap<>();
 
@@ -72,10 +73,6 @@ public class ContactService implements IContactService {
         }
 
         return myContacts;
-    }
-
-    public Optional<Contact> getConnectionById(Long id) {
-        return iContactRepository.findById(id);
     }
 
     private boolean isValidEmail(String email) {

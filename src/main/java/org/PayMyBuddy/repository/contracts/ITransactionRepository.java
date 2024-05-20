@@ -1,15 +1,17 @@
+
 package org.PayMyBuddy.repository.contracts;
 
-import org.PayMyBuddy.model.Transaction;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
+
+import org.PayMyBuddy.constant.SqlQueries;
+import org.PayMyBuddy.model.Transaction;
+import org.PayMyBuddy.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ITransactionRepository extends JpaRepository<Transaction, Long> {
-    @Query("SELECT t FROM Transaction t WHERE t.sender_id = :senderId OR t.receiver_id = :receiverId")
-    List<Transaction> findBySenderIdOrReceiverId(@Param("senderId") Integer senderId, @Param("receiverId") Integer receiverId);
+    @Query(value = SqlQueries.allTransactionsBySenderAndReceiver)
+    List<Transaction> findBySenderOrReceiver(User sender, User receiver);
 }

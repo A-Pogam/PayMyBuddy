@@ -23,17 +23,17 @@ public class Transaction {
 
     @NotNull
     @ManyToOne()
-    @JoinColumn(name = "sender_id")
-    private User sender_id;
+    @JoinColumn(name = "transaction_sender")
+    private User sender;
     @NotNull
     @ManyToOne()
-    @JoinColumn(name = "receiver_id")
-    private User receiver_id;
+    @JoinColumn(name = "transaction_receiver")
+    private User receiver;
 
     @NotNull
-    @Column(name = "amount")
+    @Column(name = "transaction_amount")
     private BigDecimal amount;
-    @Column(name = "description")
+    @Column(name = "transaction_description")
     private String description;
 
     public Integer getTransaction_id() {
@@ -44,20 +44,20 @@ public class Transaction {
         this.transaction_id = transaction_id;
     }
 
-    public User getSender_id() {
-        return sender_id;
+    public User getSender() {
+        return sender;
     }
 
-    public void setSender_id(User sender_id) {
-        this.sender_id = sender_id;
+    public void setSender(User sender) {
+        this.sender = sender;
     }
 
-    public User getReceiver_id() {
-        return receiver_id;
+    public User getReceiver() {
+        return receiver;
     }
 
-    public void setReceiver_id(User receiver_id) {
-        this.receiver_id = receiver_id;
+    public void setReceiver(User receiver) {
+        this.receiver = receiver;
     }
 
     public BigDecimal getAmount() {

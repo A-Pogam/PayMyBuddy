@@ -1,3 +1,4 @@
+
 package org.PayMyBuddy.model;
 
 import java.math.BigDecimal;
@@ -16,26 +17,27 @@ import jakarta.validation.constraints.NotNull;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Integer id;
     @NotNull
-    @Column(name = "email", unique = true)
+    @Column(name = "user_email", unique = true)
     private String email;
-    @Column(name = "password")
+    @Column(name = "user_password")
     private String password;
 
     @NotNull
-    @Column(name = "firstname")
+    @Column(name = "user_firstname")
     private String firstname;
     @NotNull
-    @Column(name = "lastname")
+    @Column(name = "user_lastname")
     private String lastname;
 
     @NotNull
-    @Column(name = "role")
+    @Column(name = "user_role")
     private String role;
 
     @NotNull
-    @Column(name = "balance", columnDefinition = "decimal(38,2) default 0")
+    @Column(name = "user_balance", columnDefinition = "decimal(38,2) default 0")
     private BigDecimal balance;
 
     public Integer getId() {

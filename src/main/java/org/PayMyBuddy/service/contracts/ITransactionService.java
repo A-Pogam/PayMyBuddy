@@ -9,11 +9,11 @@ import org.springframework.ui.Model;
 
 public interface ITransactionService {
 
-    void transferMoney(String senderEmail, String receiverEmail, String description, BigDecimal amount, Model model);
-
-    List<Transaction> getUserTransactions(Integer userId);
+    List<Transaction> getUserTransactions(User currentUser);
     List<User> getUserConnections(String userEmail);
 
     User getCurrentUser();
     Integer getCurrentUserId();
+
+    void transferMoney(String senderEmail, String receiverEmail, String description, BigDecimal amount, Model model);
 }

@@ -26,6 +26,28 @@ public class TransactionService implements ITransactionService {
     @Autowired
     private IContactService iContactService;
 
+    @Override
+    public List<Transaction> getUserTransactions(User currentUser) {
+        return transactionRepository.findBySenderOrReceiver(currentUser, currentUser);
+    }
+
+    @Override
+    public List<User> getUserConnections(String userEmail) {
+        return iContactService.getUserConnections(userEmail);
+    }
+
+    @Override
+    public User getCurrentUser() {
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        return iUserService.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    @Override
+    public Integer getCurrentUserId() {
+        return getCurrentUser().getId();
+    }
+
+    @Override
     public void transferMoney(String senderEmail, String receiverEmail, String description, BigDecimal amount, Model model) {
         User sender = iUserService.findByEmail(senderEmail).orElseThrow(() -> new RuntimeException("Sender not found"));
         User receiver = iUserService.findByEmail(receiverEmail).orElseThrow(() -> new RuntimeException("Receiver not found"));
@@ -62,38 +84,12 @@ public class TransactionService implements ITransactionService {
         iUserService.updateUser(receiver);
     }
 
-
-    private void saveTransaction(User senderId, User receiverId, String description, BigDecimal amount) {
+    private void saveTransaction(User sender, User receiver, String description, BigDecimal amount) {
         Transaction transaction = new Transaction();
-        transaction.setSender_id(senderId);
-        transaction.setReceiver_id(receiverId);
+        transaction.setSender(sender);
+        transaction.setReceiver(receiver);
         transaction.setDescription(description);
         transaction.setAmount(amount);
         transactionRepository.save(transaction);
-    }
-
-    public List<Transaction> getUserTransactions(Integer userId) {
-        return transactionRepository.findBySenderIdOrReceiverId(userId, userId);
-    }
-
-    public List<User> getUserConnections(String userEmail) {
-        return iContactService.getUserConnections(userEmail);
-    }
-
-    public User getCurrentUser() {
-        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        return iUserService.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("User not found"));
-    }
-
-    public Integer getCurrentUserId() {
-        return getCurrentUser().getId();
-    }
-
-
-public String getReceiverName(int receiverId) {
-        User receiver = iUserService.findById(receiverId)
-                .orElseThrow(() -> new RuntimeException("Receiver not found"));
-
-        return receiver.getFirstname() + " " + receiver.getLastname();
     }
 }
