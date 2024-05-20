@@ -2,8 +2,6 @@ package org.PayMyBuddy.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeMap;
 
 import org.PayMyBuddy.model.Contact;
 import org.PayMyBuddy.model.ContactKey;
@@ -52,30 +50,23 @@ public class ContactService implements IContactService {
 
     @Override
     public List<User> getUserConnections(String userEmail) {
-        Integer userId = iUserService.findByEmail(userEmail).get().getId();
+        User currentUser = iUserService.findByEmail(userEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        Integer userId = currentUser.getId();
         List<User> myContacts = new ArrayList<>();
-        TreeMap<String, Integer> contacts = new TreeMap<>();
 
-        for(Contact contact : iContactRepository.getContactsByUser(userId)) {
-            if (contact.getId().getFirstUser().getId() != userId) {
-                String contactName = contact.getId().getFirstUser().getFirstname() + contact.getId().getFirstUser().getLastname();
-                contacts.put(contactName, contact.getId().getFirstUser().getId());
+        for (Contact contact : iContactRepository.getContactsByUser(userId)) {
+            if (contact.getId().getFirstUser().getId().equals(userId)) {
+                myContacts.add(contact.getId().getSecondUser());
             } else {
-                String contactName = contact.getId().getSecondUser().getFirstname() + contact.getId().getSecondUser().getLastname();
-                contacts.put(contactName, contact.getId().getSecondUser().getId());
+                myContacts.add(contact.getId().getFirstUser());
             }
-        }
-
-        Set<String> keys = contacts.keySet();
-
-        for (String key : keys) {
-            myContacts.add(iUserService.findById(contacts.get(key)).get());
         }
 
         return myContacts;
     }
 
     private boolean isValidEmail(String email) {
-        return email != null && !email.isEmpty();
+        return email != null && !email.isEmpty() && email.contains("@");
     }
 }

@@ -18,7 +18,7 @@ public class ContactController {
     private IContactService iContactService;
 
     @GetMapping("/contact")
-    public String contact(Model model){
+    public String contact(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
 
@@ -26,9 +26,8 @@ public class ContactController {
         List<User> connections = iContactService.getUserConnections(userEmail);
 
         // Transmettre les informations de contact au modèle
-        model.addAttribute("contact", connections);
+        model.addAttribute("contacts", connections);
 
         return "contact";
-
     }
 }

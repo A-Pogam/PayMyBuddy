@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Contact us</title>
@@ -9,7 +8,6 @@
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
           crossorigin="anonymous">
     <script src="https://kit.fontawesome.com/60778dae53.js" crossorigin="anonymous"></script>
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
@@ -66,9 +64,9 @@
                 </thead>
                 <tbody>
                 <tr th:each="contact : ${contacts}">
-                    <td th:text="${contact.firstname}"></td>
-                    <td th:text="${contact.lastname}"></td>
-                    <td th:text="${contact.contactEmail}"></td>
+                    <td th:text="${contact.firstName}"></td>
+                    <td th:text="${contact.lastName}"></td>
+                    <td th:text="${contact.email}"></td>
                 </tr>
                 </tbody>
             </table>
