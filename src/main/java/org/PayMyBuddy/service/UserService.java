@@ -1,10 +1,12 @@
 package org.PayMyBuddy.service;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import org.PayMyBuddy.model.User;
 import org.PayMyBuddy.repository.contracts.IUserRepository;
 import org.PayMyBuddy.service.contracts.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,6 +14,13 @@ public class UserService implements IUserService {
 
     @Autowired
     private IUserRepository iUserRepository;
+
+    private final PasswordEncoder passwordEncoder;
+
+    public UserService(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
+
 
     @Override
     public Optional<User> findByEmail(String email) {
@@ -26,5 +35,18 @@ public class UserService implements IUserService {
     @Override
     public void updateUser(User user) {
         iUserRepository.save(user);
+    }
+
+    @Override
+    public void registerNewUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole("USER");
+        user.setBalance(BigDecimal.ZERO);
+        iUserRepository.save(user);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return findByEmail(email).isPresent();
     }
 }

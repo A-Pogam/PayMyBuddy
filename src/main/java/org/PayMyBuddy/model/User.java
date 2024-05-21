@@ -1,4 +1,3 @@
-
 package org.PayMyBuddy.model;
 
 import java.math.BigDecimal;

@@ -9,4 +9,8 @@ public interface IUserService {
 
     void updateUser(User user);
 
+    void registerNewUser(User user);
+
+    boolean existsByEmail(String email);
+
 }

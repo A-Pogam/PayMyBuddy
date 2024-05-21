@@ -35,6 +35,7 @@ public class SecurityConfig {
         RequestMatcher ConnectionPageMatcher = new AntPathRequestMatcher("/connection");
         RequestMatcher updateBalancePageMatcher = new AntPathRequestMatcher("/update-balance");
         RequestMatcher profilePageMatcher = new AntPathRequestMatcher("/profile");
+        RequestMatcher registerPageMatcher = new AntPathRequestMatcher("/register");
 
         http.authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers(loginPageMatcher).permitAll()
@@ -44,6 +45,7 @@ public class SecurityConfig {
                         .requestMatchers(ConnectionPageMatcher).authenticated()
                         .requestMatchers(updateBalancePageMatcher).authenticated()
                         .requestMatchers(profilePageMatcher).authenticated()
+                        .requestMatchers(registerPageMatcher).permitAll()
                         .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
@@ -57,10 +59,12 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/login")
                 );
 
+
         return http.build();
     }
 
     protected UserDetailsServiceImpl userDetailsService() {
         return userDetailsService;
     }
+
 }

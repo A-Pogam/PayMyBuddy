@@ -19,7 +19,7 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "transaction_id")
-    private Integer transaction_id;
+    private Integer transactionId;
 
     @NotNull
     @ManyToOne()
@@ -36,12 +36,12 @@ public class Transaction {
     @Column(name = "transaction_description")
     private String description;
 
-    public Integer getTransaction_id() {
-        return transaction_id;
+    public Integer getTransactionId() {
+        return transactionId;
     }
 
-    public void setTransaction_id(Integer transaction_id) {
-        this.transaction_id = transaction_id;
+    public void setTransactionId(Integer transactionIdd) {
+        this.transactionId = transactionIdd;
     }
 
     public User getSender() {

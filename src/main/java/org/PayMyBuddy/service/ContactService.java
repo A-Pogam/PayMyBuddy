@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.PayMyBuddy.model.Contact;
-import org.PayMyBuddy.model.ContactKey;
 import org.PayMyBuddy.model.User;
 import org.PayMyBuddy.repository.contracts.IContactRepository;
 import org.PayMyBuddy.service.contracts.IContactService;
@@ -38,12 +37,9 @@ public class ContactService implements IContactService {
         User contact = iUserService.findByEmail(contactEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("L'utilisateur de contact n'a pas été trouvé."));
 
-        ContactKey contactKey = new ContactKey();
-        contactKey.setFirstUser(initializer);
-        contactKey.setSecondUser(contact);
-
         Contact newConnection = new Contact();
-        newConnection.setId(contactKey);
+        newConnection.setFirstUser(initializer);
+        newConnection.setSecondUser(contact);
 
         return iContactRepository.save(newConnection);
     }
@@ -56,10 +52,10 @@ public class ContactService implements IContactService {
         List<User> myContacts = new ArrayList<>();
 
         for (Contact contact : iContactRepository.getContactsByUser(userId)) {
-            if (contact.getId().getFirstUser().getId().equals(userId)) {
-                myContacts.add(contact.getId().getSecondUser());
+            if (contact.getFirstUser().getId().equals(userId)) {
+                myContacts.add(contact.getSecondUser());
             } else {
-                myContacts.add(contact.getId().getFirstUser());
+                myContacts.add(contact.getFirstUser());
             }
         }
 

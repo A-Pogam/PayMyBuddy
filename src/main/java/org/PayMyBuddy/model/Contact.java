@@ -1,21 +1,39 @@
 package org.PayMyBuddy.model;
 
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "contact")
 public class Contact {
 
-    @EmbeddedId
-    private ContactKey id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer contactId;
 
-    public ContactKey getId() {
-        return id;
+    private static final long serialVersionUID = 1L;
+
+    @ManyToOne()
+    @JoinColumn(name = "contact_first_user_id")
+    private User firstUser;
+
+    @ManyToOne()
+    @JoinColumn(name = "contact_second_user_id")
+    private User secondUser;
+
+    public User getFirstUser() {
+        return firstUser;
     }
 
-    public void setId(ContactKey id) {
-        this.id = id;
+    public void setFirstUser(User firstUser) {
+        this.firstUser = firstUser;
     }
+
+    public User getSecondUser() {
+        return secondUser;
+    }
+
+    public void setSecondUser(User secondUser) {
+        this.secondUser = secondUser;
+    }
+
 }
