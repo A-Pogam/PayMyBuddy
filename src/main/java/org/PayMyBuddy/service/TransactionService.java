@@ -53,25 +53,28 @@ public class TransactionService implements ITransactionService {
         User sender = iUserService.findById(transactionSender).orElseThrow(() -> new RuntimeException("Sender not found"));
         User receiver = iUserService.findById(transactionReceiver).orElseThrow(() -> new RuntimeException("Receiver not found"));
 
+        // Calculez le montant total prélevé (montant + frais)
+        BigDecimal totalAmount = calculateTotalAmount(amount);
+
         BigDecimal senderBalance = sender.getBalance();
-        if (senderBalance.compareTo(amount) < 0) {
+        if (senderBalance.compareTo(totalAmount) < 0) {
             throw new RuntimeException("Insufficient funds");
         }
 
-        BigDecimal finalAmount = calculateFinalAmount(amount);
-        updateSenderBalance(sender, finalAmount.negate());
-        updateReceiverBalance(receiver, finalAmount);
+        // Mettez à jour les soldes des utilisateurs
+        updateSenderBalance(sender, totalAmount); // Soustrayez le montant total du solde de l'expéditeur
+        updateReceiverBalance(receiver, amount); // Ajoutez le montant initial au solde du destinataire
 
-        saveTransaction(sender, receiver, description, finalAmount);
+        // Sauvegardez la transaction
+        saveTransaction(sender, receiver, description, amount); // Enregistrez le montant initial de la transaction
         model.addAttribute("senderFirstName", sender.getFirstname());
         model.addAttribute("senderLastName", sender.getLastname());
     }
 
-
-    private BigDecimal calculateFinalAmount(BigDecimal amount) {
-        BigDecimal feePercentage = BigDecimal.valueOf(0.5);
-        BigDecimal feeAmount = amount.multiply(feePercentage.divide(BigDecimal.valueOf(100)));
-        return amount.subtract(feeAmount);
+    private BigDecimal calculateTotalAmount(BigDecimal amount) {
+        BigDecimal feePercentage = BigDecimal.valueOf(5); // 5% fee
+        BigDecimal feeAmount = amount.multiply(feePercentage).divide(BigDecimal.valueOf(100));
+        return amount.add(feeAmount);
     }
 
     private void updateSenderBalance(User sender, BigDecimal amount) {
@@ -91,7 +94,7 @@ public class TransactionService implements ITransactionService {
         transaction.setSender(sender);
         transaction.setReceiver(receiver);
         transaction.setDescription(description);
-        transaction.setAmount(amount);
+        transaction.setAmount(amount); // Enregistrez le montant initial de la transaction
         transactionRepository.save(transaction);
     }
 }
