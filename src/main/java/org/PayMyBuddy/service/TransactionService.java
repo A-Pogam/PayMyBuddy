@@ -48,9 +48,10 @@ public class TransactionService implements ITransactionService {
     }
 
     @Override
-    public void transferMoney(String senderEmail, String receiverEmail, String description, BigDecimal amount, Model model) {
-        User sender = iUserService.findByEmail(senderEmail).orElseThrow(() -> new RuntimeException("Sender not found"));
-        User receiver = iUserService.findByEmail(receiverEmail).orElseThrow(() -> new RuntimeException("Receiver not found"));
+    public void transferMoney(int transactionSender, int transactionReceiver, String description, BigDecimal amount, Model model) {
+        // Recherche des utilisateurs à partir des identifiants de transaction
+        User sender = iUserService.findById(transactionSender).orElseThrow(() -> new RuntimeException("Sender not found"));
+        User receiver = iUserService.findById(transactionReceiver).orElseThrow(() -> new RuntimeException("Receiver not found"));
 
         BigDecimal senderBalance = sender.getBalance();
         if (senderBalance.compareTo(amount) < 0) {
@@ -65,6 +66,7 @@ public class TransactionService implements ITransactionService {
         model.addAttribute("senderFirstName", sender.getFirstname());
         model.addAttribute("senderLastName", sender.getLastname());
     }
+
 
     private BigDecimal calculateFinalAmount(BigDecimal amount) {
         BigDecimal feePercentage = BigDecimal.valueOf(0.5);

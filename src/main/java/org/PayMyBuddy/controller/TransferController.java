@@ -29,12 +29,14 @@ public class TransferController {
 
     //Doing the internal money transfer
     @PostMapping("/transfer")
-    public String performTransfer(@RequestParam String receiverEmail,
+    public String performTransfer(@RequestParam int transaction_receiver,
                                   @RequestParam String description,
                                   @RequestParam BigDecimal amount,
                                   Model model) {
-        String senderEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        iTransactionService.transferMoney(senderEmail, receiverEmail, description, amount, model);
+        // Récupérer l'identifiant de l'utilisateur connecté à partir du service
+        int senderId = iTransactionService.getCurrentUserId();
+        // Appeler la méthode transferMoney avec les identifiants d'utilisateur et les autres paramètres nécessaires
+        iTransactionService.transferMoney(senderId, transaction_receiver, description, amount, model);
         return "redirect:/transfer?success=Transfer successful";
     }
 }

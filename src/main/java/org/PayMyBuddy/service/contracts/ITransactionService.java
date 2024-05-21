@@ -15,5 +15,5 @@ public interface ITransactionService {
     User getCurrentUser();
     Integer getCurrentUserId();
 
-    void transferMoney(String senderEmail, String receiverEmail, String description, BigDecimal amount, Model model);
+    void transferMoney(int transactionSender, int transactionReceiver, String description, BigDecimal amount, Model model);
 }
