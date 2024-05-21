@@ -21,7 +21,6 @@ public class UserService implements IUserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-
     @Override
     public Optional<User> findByEmail(String email) {
         return iUserRepository.findByEmail(email);
@@ -29,7 +28,7 @@ public class UserService implements IUserService {
 
     @Override
     public Optional<User> findById(int id) {
-        return iUserRepository.findById(id);
+        return iUserRepository.findById((long) id);
     }
 
     @Override
