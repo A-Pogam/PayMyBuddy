@@ -14,11 +14,11 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
+
 @Controller
 public class RegistrationController {
     private static final Logger logger = LoggerFactory.getLogger(RegistrationController.class);
-
-
 
     @Autowired
     private IUserService userService;
@@ -31,20 +31,24 @@ public class RegistrationController {
 
     @PostMapping("/register")
     public String registerUser(@Valid @ModelAttribute("user") User user, BindingResult bindingResult) {
+        // Set default values before validation
+        user.setRole("USER");
+        user.setBalance(BigDecimal.ZERO);
+
         if (bindingResult.hasErrors()) {
+            logger.error("Validation errors: {}", bindingResult.getAllErrors());
             return "register";
         }
 
         // Vérifiez si l'e-mail est déjà utilisé
         if (userService.existsByEmail(user.getEmail())) {
+            logger.warn("Email already exists: {}", user.getEmail());
             return "redirect:/register?error=emailExists";
         }
 
         // Enregistrer le nouvel utilisateur
         userService.registerNewUser(user);
-
         logger.info("Utilisateur enregistré avec succès : {}", user.getEmail());
-
 
         // Rediriger vers une page de confirmation ou de connexion
         return "redirect:/home";

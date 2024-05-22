@@ -37,7 +37,7 @@ public class User {
 
     @NotNull
     @Column(name = "user_balance", columnDefinition = "decimal(38,2) default 0")
-    private BigDecimal balance;
+    private BigDecimal balance = BigDecimal.ZERO;
 
     public Integer getId() {
         return id;
