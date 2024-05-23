@@ -67,8 +67,8 @@ class TransferControllerTest {
                         .param("transaction_receiver", String.valueOf(receiverId))
                         .param("description", description)
                         .param("amount", amount.toString()))
-                .andExpect(MockMvcResultMatchers.status().isOk());
-
+                .andExpect(MockMvcResultMatchers.status().is3xxRedirection()) // Vérifier la redirection
+                .andReturn().getResponse();
         // Verify that transferMoney method is called with correct parameters
         verify(transactionService, times(1)).transferMoney(eq(senderId), eq(receiverId), eq(description), eq(amount), modelCaptor.capture());
 
