@@ -47,9 +47,10 @@ public class TransactionService implements ITransactionService {
         return getCurrentUser().getId();
     }
 
+    // Dans TransactionService
     @Override
     public void transferMoney(int transactionSender, int transactionReceiver, String description, BigDecimal amount, Model model) {
-        // Recherche des utilisateurs à partir des identifiants de transaction
+        // Récupérer l'utilisateur expéditeur et le destinataire à partir de leur ID
         User sender = iUserService.findById(transactionSender).orElseThrow(() -> new RuntimeException("Sender not found"));
         User receiver = iUserService.findById(transactionReceiver).orElseThrow(() -> new RuntimeException("Receiver not found"));
 
@@ -70,6 +71,7 @@ public class TransactionService implements ITransactionService {
         model.addAttribute("senderFirstName", sender.getFirstname());
         model.addAttribute("senderLastName", sender.getLastname());
     }
+
 
     private BigDecimal calculateTotalAmount(BigDecimal amount) {
         BigDecimal feePercentage = BigDecimal.valueOf(5); // 5% fee
