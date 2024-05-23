@@ -10,11 +10,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.math.BigDecimal;
 
 @Controller
 public class RegistrationController {
@@ -36,14 +35,22 @@ public class RegistrationController {
             return "register";
         }
 
+        // Vérifier si l'email existe déjà avant d'enregistrer l'utilisateur
+        if (userService.existsByEmail(user.getEmail())) {
+            logger.warn("Email already exists: {}", user.getEmail());
+            return "register";
+        }
+
+        // Enregistrer l'utilisateur uniquement si toutes les validations sont réussies et l'email n'existe pas déjà
         boolean isRegistered = userService.registerUser(user);
 
         if (!isRegistered) {
-            logger.warn("Email already exists: {}", user.getEmail());
-            return "redirect:/register?error=emailExists";
+            logger.error("Failed to register user: {}", user.getEmail());
+            return "register";
         }
 
         logger.info("Utilisateur enregistré avec succès : {}", user.getEmail());
         return "redirect:/home";
     }
+
 }

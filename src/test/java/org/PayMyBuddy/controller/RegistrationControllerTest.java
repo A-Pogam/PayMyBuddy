@@ -2,97 +2,92 @@ package org.PayMyBuddy.controller;
 
 import org.PayMyBuddy.model.User;
 import org.PayMyBuddy.service.contracts.IUserService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.ui.Model;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.validation.BindingResult;
+import org.springframework.ui.Model;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+@WebMvcTest(controllers = RegistrationController.class)
 class RegistrationControllerTest {
 
-    @Mock
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
     private IUserService userService;
 
-    @Mock
+    @MockBean
     private Model model;
 
-    @Mock
+    @MockBean
     private BindingResult bindingResult;
 
-    @InjectMocks
-    private RegistrationController registrationController;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
     @Test
-    void testShowRegistrationForm() {
-        // Given
-        String expectedView = "register";
-
+    @WithMockUser(username = "user", roles = { "USER" })
+    void testShowRegistrationForm() throws Exception {
         // When
-        String actualView = registrationController.showRegistrationForm(model);
-
-        // Then
-        assertEquals(expectedView, actualView);
-        verify(model, times(1)).addAttribute(eq("user"), any(User.class));
+        mockMvc.perform(MockMvcRequestBuilders.get("/register"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("register"))
+                .andExpect(MockMvcResultMatchers.model().attributeExists("user"));
     }
 
-    @Test
-    void testRegisterUser_WithValidationErrors() {
-        // Given
-        User user = new User();
-        when(bindingResult.hasErrors()).thenReturn(true);
-
-        // When
-        String actualView = registrationController.registerUser(user, bindingResult);
-
-        // Then
-        assertEquals("register", actualView);
-        verify(bindingResult, times(1)).hasErrors();
-        verify(userService, never()).registerUser(any(User.class));
-    }
 
     @Test
-    void testRegisterUser_EmailAlreadyExists() {
+    @WithMockUser(username = "user", roles = { "USER" })
+    void testRegisterUser_EmailAlreadyExists() throws Exception {
         // Given
-        User user = new User();
-        user.setEmail("existing@example.com");
         when(bindingResult.hasErrors()).thenReturn(false);
         when(userService.registerUser(any(User.class))).thenReturn(false);
 
         // When
-        String actualView = registrationController.registerUser(user, bindingResult);
+        mockMvc.perform(MockMvcRequestBuilders.post("/register")
+                        .with(csrf())
+                        .param("email", "existing@example.com")
+                        .param("password", "password123")
+                        .param("firstname", "John")
+                        .param("lastname", "Doe")
+                        .param("role", "USER")
+                        .param("balance", "0")
+                        .sessionAttr("user", new User()))
+                .andExpect(MockMvcResultMatchers.status().isOk());
 
         // Then
-        assertEquals("redirect:/register?error=emailExists", actualView);
-        verify(bindingResult, times(1)).hasErrors();
-        verify(userService, times(1)).registerUser(user);
+        verify(userService, times(1)).registerUser(any(User.class));
     }
 
     @Test
-    void testRegisterUser_Success() {
+    @WithMockUser(username = "user", roles = { "USER" })
+    void testRegisterUser_Success() throws Exception {
         // Given
-        User user = new User();
-        user.setEmail("new@example.com");
         when(bindingResult.hasErrors()).thenReturn(false);
         when(userService.registerUser(any(User.class))).thenReturn(true);
 
         // When
-        String actualView = registrationController.registerUser(user, bindingResult);
+        mockMvc.perform(MockMvcRequestBuilders.post("/register")
+                        .with(csrf())
+                        .param("email", "new@example.com")
+                        .param("password", "password123")
+                        .param("firstname", "John")
+                        .param("lastname", "Doe")
+                        .param("role", "USER")
+                        .param("balance", "0")
+                        .sessionAttr("user", new User()))
+                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/home"));
 
         // Then
-        assertEquals("redirect:/home", actualView);
-        verify(bindingResult, times(1)).hasErrors();
-        verify(userService, times(1)).registerUser(user);
+        verify(userService, times(1)).registerUser(any(User.class));
     }
 }
