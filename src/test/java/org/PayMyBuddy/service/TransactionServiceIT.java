@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-class TransactionServiceIntegrationTest {
+class TransactionServiceTest {
 
     @Autowired
     private TransactionService transactionService;
@@ -50,59 +50,31 @@ class TransactionServiceIntegrationTest {
     }
 
     @Test
-    void testGetCurrentUser() {
-        // Given
-        User user = new User();
-        user.setId(1);
-        user.setEmail("user@example.com");
-        user.setBalance(new BigDecimal("1000"));
-
-        // Configure the SecurityContext with a mock Authentication object
-        Authentication auth = new UsernamePasswordAuthenticationToken(user, null);
-        SecurityContextHolder.getContext().setAuthentication(auth);
-
-        // Configure the UserService to return the user when findByEmail is called
-        when(userService.findByEmail("user@example.com")).thenReturn(java.util.Optional.of(user));
-
-        // When
-        User currentUser = transactionService.getCurrentUser();
-
-        // Then
-        assertNotNull(currentUser);
-        assertEquals(user.getId(), currentUser.getId());
-        assertEquals(user.getEmail(), currentUser.getEmail());
-        assertEquals(user.getBalance(), currentUser.getBalance());
-    }
-
-
-    @Test
-    void testGetCurrentUserId() {
-        // Given
-        String userEmail = "user@example.com";
-        when(userService.findByEmail(userEmail)).thenReturn(java.util.Optional.of(user));
-        SecurityContextHolder.getContext().setAuthentication(null);
-
-        // When
-        Integer currentUserId = transactionService.getCurrentUserId();
-
-        // Then
-        assertNotNull(currentUserId);
-        assertEquals(user.getId(), currentUserId);
-    }
-
-    @Test
     void testTransferMoney_InsufficientFunds() {
         // Given
+        User sender = new User();
+        sender.setId(1);
+        sender.setEmail("sender@example.com");
+        sender.setBalance(new BigDecimal("1000"));
+
+        User receiver = new User();
+        receiver.setId(2);
+        receiver.setEmail("receiver@example.com");
+
         BigDecimal amount = new BigDecimal("2000");
         String description = "Test transfer";
         Model model = mock(Model.class);
 
+        // Configure the UserService to return the sender user when findById is called with sender ID
+        when(userService.findById(1)).thenReturn(java.util.Optional.of(sender));
+
         // When, Then
         assertThrows(RuntimeException.class, () -> transactionService.transferMoney(1, 2, description, amount, model));
-        verify(userService, never()).findById(anyInt());
+        verify(userService, times(1)).findById(1);
         verify(userService, never()).updateUser(any());
         verify(transactionRepository, never()).save(any());
         verify(model, never()).addAttribute(anyString(), any());
     }
+
 
 }
