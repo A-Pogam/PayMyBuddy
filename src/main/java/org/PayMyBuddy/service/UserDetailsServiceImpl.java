@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.PayMyBuddy.exception.PasswordNotFoundException;
 import org.PayMyBuddy.model.User;
-import org.PayMyBuddy.repository.contracts.IUserRepository;
+import org.PayMyBuddy.repository.contracts.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,11 +17,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-    private final IUserRepository dbUserRepository;
+    private final UserRepository dbUserRepository;
     private final ApplicationContext applicationContext;
 
     @Autowired
-    public UserDetailsServiceImpl(IUserRepository dbUserRepository, ApplicationContext applicationContext) {
+    public UserDetailsServiceImpl(UserRepository dbUserRepository, ApplicationContext applicationContext) {
         this.dbUserRepository = dbUserRepository;
         this.applicationContext = applicationContext;
     }

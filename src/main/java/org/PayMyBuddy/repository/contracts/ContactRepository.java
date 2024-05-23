@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IContactRepository extends JpaRepository<Contact, Long> {
+public interface ContactRepository extends JpaRepository<Contact, Long> {
 
     @Query(value = SqlQueries.allContactsByUser, nativeQuery = true)
     public List<Contact> getContactsByUser(Integer userId);

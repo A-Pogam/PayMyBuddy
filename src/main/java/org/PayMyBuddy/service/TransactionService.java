@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.PayMyBuddy.model.Transaction;
 import org.PayMyBuddy.model.User;
-import org.PayMyBuddy.repository.contracts.ITransactionRepository;
+import org.PayMyBuddy.repository.contracts.TransactionRepository;
 import org.PayMyBuddy.service.contracts.IContactService;
 import org.PayMyBuddy.service.contracts.ITransactionService;
 import org.PayMyBuddy.service.contracts.IUserService;
@@ -21,7 +21,7 @@ public class TransactionService implements ITransactionService {
     private IUserService iUserService;
 
     @Autowired
-    private ITransactionRepository transactionRepository;
+    private TransactionRepository transactionRepository;
 
     @Autowired
     private IContactService iContactService;

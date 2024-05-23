@@ -2,7 +2,7 @@ package org.PayMyBuddy.service;
 
 import org.PayMyBuddy.model.Contact;
 import org.PayMyBuddy.model.User;
-import org.PayMyBuddy.repository.contracts.IContactRepository;
+import org.PayMyBuddy.repository.contracts.ContactRepository;
 import org.PayMyBuddy.service.contracts.IUserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @Transactional
-class ContactServiceTest {
+class ContactServiceIT {
 
     @Autowired
     private ContactService contactService;
@@ -30,7 +30,7 @@ class ContactServiceTest {
     private IUserService userService;
 
     @MockBean
-    private IContactRepository contactRepository;
+    private ContactRepository contactRepository;
 
     private User user1;
     private User user2;

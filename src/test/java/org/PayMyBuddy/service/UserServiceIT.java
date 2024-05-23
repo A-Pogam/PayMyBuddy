@@ -1,76 +1,100 @@
 package org.PayMyBuddy.service;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.PayMyBuddy.model.User;
-import org.PayMyBuddy.repository.contracts.IUserRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import org.PayMyBuddy.model.User;
+import org.PayMyBuddy.repository.contracts.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
-class UserServiceTest {
+@SpringBootTest
+@Transactional
+public class UserServiceIT {
 
-    @Mock
-    private IUserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-    @Mock
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @InjectMocks
     private UserService userService;
 
     @BeforeEach
-    void setUp() {
-        MockitoAnnotations.initMocks(this);
+    public void setUp() {
+        userService = new UserService(userRepository, passwordEncoder);
     }
 
     @Test
-    void testRegisterUser_NewUser() {
-        // Given
+    public void testRegisterNewUser() {
         User user = new User();
-        user.setEmail("test@example.com");
-        user.setPassword("password");
+        user.setEmail("testX@example.com");
+        user.setPassword("password123");
+        user.setFirstname("John");
+        user.setLastname("Doe");
+        user.setRole("USER");
 
-        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.empty());
-        when(passwordEncoder.encode("password")).thenReturn("encodedPassword");
+        userService.registerNewUser(user);
 
-        // When
-        boolean registered = userService.registerUser(user);
-
-        // Then
-        assertTrue(registered);
-        assertEquals("encodedPassword", user.getPassword());
-        assertEquals("USER", user.getRole());
-        assertEquals(BigDecimal.ZERO, user.getBalance());
-        verify(userRepository, times(1)).findByEmail("test@example.com");
-        verify(passwordEncoder, times(1)).encode("password");
-        verify(userRepository, times(1)).save(user);
+        Optional<User> foundUser = userService.findByEmail("testX@example.com");
+        assertTrue(foundUser.isPresent());
+        assertEquals("testX@example.com", foundUser.get().getEmail());
+        assertTrue(passwordEncoder.matches("password123", foundUser.get().getPassword()));
+        assertEquals("USER", foundUser.get().getRole());
+        assertEquals(BigDecimal.ZERO, foundUser.get().getBalance());
     }
 
     @Test
-    void testRegisterUser_UserAlreadyExists() {
-        // Given
-        User existingUser = new User();
-        existingUser.setEmail("existing@example.com");
-
-        when(userRepository.findByEmail("existing@example.com")).thenReturn(Optional.of(existingUser));
-
-        // When
+    public void testFindById() {
         User user = new User();
-        user.setEmail("existing@example.com");
-        boolean registered = userService.registerUser(user);
+        user.setEmail("unique_test2@example.com");
+        user.setPassword("password123");
+        user.setFirstname("Jane");
+        user.setLastname("Doe");
+        user.setRole("USER");
+        userRepository.save(user);
 
-        // Then
-        assertFalse(registered);
-        verify(userRepository, times(1)).findByEmail("existing@example.com");
-        verifyNoMoreInteractions(passwordEncoder);
-        verifyNoMoreInteractions(userRepository);
+        Optional<User> foundUser = userService.findById(user.getId().intValue());
+        assertTrue(foundUser.isPresent());
+        assertEquals("unique_test2@example.com", foundUser.get().getEmail());
+    }
+
+    @Test
+    public void testUpdateUser() {
+        User user = new User();
+        user.setEmail("test3@example.com");
+        user.setPassword("password123");
+        user.setFirstname("Jim");
+        user.setLastname("Beam");
+        user.setRole("USER");
+        userRepository.save(user);
+
+        user.setBalance(BigDecimal.valueOf(100));
+        userService.updateUser(user);
+
+        Optional<User> updatedUser = userService.findByEmail("test3@example.com");
+        assertTrue(updatedUser.isPresent());
+        assertEquals(BigDecimal.valueOf(100), updatedUser.get().getBalance());
+    }
+
+    @Test
+    public void testExistsByEmail() {
+        User user = new User();
+        user.setEmail("test4@example.com");
+        user.setPassword("password123");
+        user.setFirstname("Jack");
+        user.setLastname("Daniels");
+        user.setRole("USER");
+        userRepository.save(user);
+
+        assertTrue(userService.existsByEmail("test4@example.com"));
+        assertFalse(userService.existsByEmail("nonexistent@example.com"));
     }
 }

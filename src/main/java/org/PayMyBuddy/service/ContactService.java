@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.PayMyBuddy.model.Contact;
 import org.PayMyBuddy.model.User;
-import org.PayMyBuddy.repository.contracts.IContactRepository;
+import org.PayMyBuddy.repository.contracts.ContactRepository;
 import org.PayMyBuddy.service.contracts.IContactService;
 import org.PayMyBuddy.service.contracts.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class ContactService implements IContactService {
     @Autowired
     private IUserService iUserService;
     @Autowired
-    private IContactRepository iContactRepository;
+    private ContactRepository contactRepository;
 
     @Override
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -41,7 +41,7 @@ public class ContactService implements IContactService {
         newConnection.setFirstUser(initializer);
         newConnection.setSecondUser(contact);
 
-        return iContactRepository.save(newConnection);
+        return contactRepository.save(newConnection);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class ContactService implements IContactService {
         Integer userId = currentUser.getId();
         List<User> myContacts = new ArrayList<>();
 
-        for (Contact contact : iContactRepository.getContactsByUser(userId)) {
+        for (Contact contact : contactRepository.getContactsByUser(userId)) {
             if (contact.getFirstUser().getId().equals(userId)) {
                 myContacts.add(contact.getSecondUser());
             } else {

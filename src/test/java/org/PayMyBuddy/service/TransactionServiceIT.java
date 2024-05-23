@@ -1,8 +1,7 @@
 package org.PayMyBuddy.service;
 
-import org.PayMyBuddy.model.Transaction;
 import org.PayMyBuddy.model.User;
-import org.PayMyBuddy.repository.contracts.ITransactionRepository;
+import org.PayMyBuddy.repository.contracts.TransactionRepository;
 import org.PayMyBuddy.service.contracts.IContactService;
 import org.PayMyBuddy.service.contracts.IUserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,22 +9,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-class TransactionServiceTest {
+class TransactionServiceIT {
 
     @Autowired
     private TransactionService transactionService;
@@ -34,7 +26,7 @@ class TransactionServiceTest {
     private IUserService userService;
 
     @MockBean
-    private ITransactionRepository transactionRepository;
+    private TransactionRepository transactionRepository;
 
     @MockBean
     private IContactService contactService;
