@@ -13,4 +13,6 @@ public interface IUserService {
 
     boolean existsByEmail(String email);
 
+    boolean registerUser(User user);
+
 }

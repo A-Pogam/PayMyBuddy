@@ -31,26 +31,19 @@ public class RegistrationController {
 
     @PostMapping("/register")
     public String registerUser(@Valid @ModelAttribute("user") User user, BindingResult bindingResult) {
-        // Set default values before validation
-        user.setRole("USER");
-        user.setBalance(BigDecimal.ZERO);
-
         if (bindingResult.hasErrors()) {
             logger.error("Validation errors: {}", bindingResult.getAllErrors());
             return "register";
         }
 
-        // Vérifiez si l'e-mail est déjà utilisé
-        if (userService.existsByEmail(user.getEmail())) {
+        boolean isRegistered = userService.registerUser(user);
+
+        if (!isRegistered) {
             logger.warn("Email already exists: {}", user.getEmail());
             return "redirect:/register?error=emailExists";
         }
 
-        // Enregistrer le nouvel utilisateur
-        userService.registerNewUser(user);
         logger.info("Utilisateur enregistré avec succès : {}", user.getEmail());
-
-        // Rediriger vers une page de confirmation ou de connexion
         return "redirect:/home";
     }
 }

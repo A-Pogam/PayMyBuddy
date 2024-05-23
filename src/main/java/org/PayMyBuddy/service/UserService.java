@@ -48,4 +48,15 @@ public class UserService implements IUserService {
     public boolean existsByEmail(String email) {
         return findByEmail(email).isPresent();
     }
+
+    public boolean registerUser(User user) {
+        // Vérifiez si l'e-mail est déjà utilisé
+        if (existsByEmail(user.getEmail())) {
+            return false;
+        }
+
+        // Enregistrer le nouvel utilisateur avec des valeurs par défaut
+        registerNewUser(user);
+        return true;
+    }
 }

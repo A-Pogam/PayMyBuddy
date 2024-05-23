@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 
@@ -35,7 +36,7 @@ public class User {
     @Column(name = "user_role")
     private String role;
 
-    @NotNull
+    @Min(value = 0, message = "Balance must be equal to or greater than zero")
     @Column(name = "user_balance", columnDefinition = "decimal(38,2) default 0")
     private BigDecimal balance = BigDecimal.ZERO;
 
