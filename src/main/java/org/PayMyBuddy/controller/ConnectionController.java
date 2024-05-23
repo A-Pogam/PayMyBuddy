@@ -33,6 +33,6 @@ public class ConnectionController {
         // Rediriger avec un message de succès
         redirectAttributes.addFlashAttribute("successMessage", "Connection added successfully!");
 
-        return "redirect:/connection";
+        return "connection";
     }
 }
