@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+
 
 import jakarta.transaction.Transactional;
 
@@ -22,6 +24,8 @@ public class ContactService implements IContactService {
     private IUserService iUserService;
     @Autowired
     private ContactRepository contactRepository;
+
+
 
     @Override
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -36,6 +40,11 @@ public class ContactService implements IContactService {
 
         User contact = iUserService.findByEmail(contactEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("L'utilisateur de contact n'a pas été trouvé."));
+
+        // Vérifier si la connexion existe déjà
+        if (contactRepository.existsByFirstUserAndSecondUser(initializer, contact) ||
+                contactRepository.existsByFirstUserAndSecondUser(contact, initializer)) {
+            return null;        }
 
         Contact newConnection = new Contact();
         newConnection.setFirstUser(initializer);
