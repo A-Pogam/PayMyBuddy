@@ -15,6 +15,7 @@ import jakarta.validation.constraints.NotNull;
 @Entity
 @Table(name="user")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -39,6 +40,9 @@ public class User {
     @Min(value = 0, message = "Balance must be equal to or greater than zero")
     @Column(name = "user_balance", columnDefinition = "decimal(38,2) default 0")
     private BigDecimal balance = BigDecimal.ZERO;
+
+
+
 
     public Integer getId() {
         return id;

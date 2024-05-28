@@ -28,11 +28,14 @@ public class ConnectionController {
         String initializerEmail = authentication.getName();
 
         // Créer la connexion entre l'utilisateur actuel et le nouveau contact
-        iContactService.createConnectionBetweenTwoUsers(initializerEmail, contactEmail);
+        if (iContactService.createConnectionBetweenTwoUsers(initializerEmail, contactEmail) == null) {
+            // Rediriger avec un message d'erreur en cas d'échec
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to add connection. The contact may already exist.");
+            return "redirect:/connection";
+        }
 
         // Rediriger avec un message de succès
         redirectAttributes.addFlashAttribute("successMessage", "Connection added successfully!");
-
-        return "connection";
+        return "redirect:/connection";
     }
 }

@@ -9,11 +9,10 @@ import org.PayMyBuddy.repository.contracts.ContactRepository;
 import org.PayMyBuddy.service.contracts.IContactService;
 import org.PayMyBuddy.service.contracts.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
-
 
 import jakarta.transaction.Transactional;
 
@@ -22,10 +21,9 @@ public class ContactService implements IContactService {
 
     @Autowired
     private IUserService iUserService;
+
     @Autowired
     private ContactRepository contactRepository;
-
-
 
     @Override
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -41,16 +39,23 @@ public class ContactService implements IContactService {
         User contact = iUserService.findByEmail(contactEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("L'utilisateur de contact n'a pas été trouvé."));
 
-        // Vérifier si la connexion existe déjà
-        if (contactRepository.existsByFirstUserAndSecondUser(initializer, contact) ||
-                contactRepository.existsByFirstUserAndSecondUser(contact, initializer)) {
-            return null;        }
-
         Contact newConnection = new Contact();
         newConnection.setFirstUser(initializer);
         newConnection.setSecondUser(contact);
 
-        return contactRepository.save(newConnection);
+
+        if (contactRepository.existsByFirstUserAndSecondUser(initializer, contact)) {
+            System.out.println("Contact already exists between users.");
+            return null;
+        }
+
+        try {
+            return contactRepository.save(newConnection);
+        } catch (DataIntegrityViolationException e) {
+            // Log the exception if necessary
+            System.out.println("Contact already exists: " + e.getMessage());
+            return null;
+        }
     }
 
     @Override

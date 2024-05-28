@@ -3,7 +3,7 @@ package org.PayMyBuddy.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "contact")
+@Table(name = "contact", uniqueConstraints = @UniqueConstraint(columnNames =  {"contact_first_user_id", "contact_second_user_id"}))
 public class Contact {
 
     @Id

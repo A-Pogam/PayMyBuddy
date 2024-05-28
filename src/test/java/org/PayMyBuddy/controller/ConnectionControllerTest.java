@@ -1,5 +1,6 @@
 package org.PayMyBuddy.controller;
 
+import org.PayMyBuddy.model.Contact;
 import org.PayMyBuddy.service.contracts.IContactService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,15 +34,42 @@ class ConnectionControllerTest {
 
     @Test
     @WithMockUser(username = "user@example.com", roles = "USER")
-    void testAddConnection_Post() throws Exception {
+    void testAddConnection_Post_Success() throws Exception {
         // Given
         String contactEmail = "test@example.com";
+
+        // Simulate a successful creation of the contact
+        Contact contact = new Contact();
+        when(iContactService.createConnectionBetweenTwoUsers("user@example.com", contactEmail)).thenReturn(contact);
 
         // When
         mockMvc.perform(MockMvcRequestBuilders.post("/connection")
                         .with(csrf())
                         .param("contactEmail", contactEmail))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/connection"))
+                .andExpect(MockMvcResultMatchers.flash().attributeExists("successMessage"));
+
+        // Then
+        verify(iContactService, times(1)).createConnectionBetweenTwoUsers("user@example.com", contactEmail);
+    }
+
+    @Test
+    @WithMockUser(username = "user@example.com", roles = "USER")
+    void testAddConnection_Post_DuplicateError() throws Exception {
+        // Given
+        String contactEmail = "test@example.com";
+
+        // Simulate a duplicate key error
+        when(iContactService.createConnectionBetweenTwoUsers("user@example.com", contactEmail)).thenReturn(null);
+
+        // When
+        mockMvc.perform(MockMvcRequestBuilders.post("/connection")
+                        .with(csrf())
+                        .param("contactEmail", contactEmail))
+                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/connection"))
+                .andExpect(MockMvcResultMatchers.flash().attributeExists("errorMessage"));
 
         // Then
         verify(iContactService, times(1)).createConnectionBetweenTwoUsers("user@example.com", contactEmail);

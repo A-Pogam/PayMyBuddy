@@ -18,6 +18,8 @@ public class UserService implements IUserService {
     private final PasswordEncoder passwordEncoder;
 
 
+
+
     @Autowired
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -61,5 +63,10 @@ public class UserService implements IUserService {
         // Enregistrer le nouvel utilisateur avec des valeurs par défaut
         registerNewUser(user);
         return true;
+    }
+
+    @Override
+    public void save(User user) {
+        userRepository.save(user);
     }
 }
