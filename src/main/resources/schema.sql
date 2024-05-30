@@ -41,3 +41,4 @@ CREATE TABLE `transaction` (
   CONSTRAINT `FK3a476bj9v7pchg16g1g8krqde` FOREIGN KEY (`transaction_receiver`) REFERENCES `user` (`user_id`),
   CONSTRAINT `FKmu13tpls41ea49ajiumnjbrkv` FOREIGN KEY (`transaction_sender`) REFERENCES `user` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+

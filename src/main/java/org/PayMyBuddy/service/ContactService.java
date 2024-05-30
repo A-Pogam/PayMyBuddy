@@ -15,9 +15,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 @Service
 public class ContactService implements IContactService {
+
+    private static final Logger logger = LogManager.getLogger(ContactService.class);
+
 
     @Autowired
     private IUserService iUserService;
@@ -45,7 +51,7 @@ public class ContactService implements IContactService {
 
 
         if (contactRepository.existsByFirstUserAndSecondUser(initializer, contact)) {
-            System.out.println("Contact already exists between users.");
+            logger.warn("Contact already exists between users.");
             return null;
         }
 
@@ -53,7 +59,7 @@ public class ContactService implements IContactService {
             return contactRepository.save(newConnection);
         } catch (DataIntegrityViolationException e) {
             // Log the exception if necessary
-            System.out.println("Contact already exists: " + e.getMessage());
+            logger.error("Contact already exists: {}", e.getMessage());
             return null;
         }
     }
