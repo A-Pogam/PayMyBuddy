@@ -12,6 +12,7 @@ import org.PayMyBuddy.service.contracts.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 @Service
@@ -49,6 +50,7 @@ public class TransactionService implements ITransactionService {
 
     // Dans TransactionService
     @Override
+    @Transactional
     public void transferMoney(int transactionSender, int transactionReceiver, String description, BigDecimal amount, Model model) {
         // Récupérer l'utilisateur expéditeur et le destinataire à partir de leur ID
         User sender = iUserService.findById(transactionSender).orElseThrow(() -> new RuntimeException("Sender not found"));
