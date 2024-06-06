@@ -1,29 +1,40 @@
 package org.PayMyBuddy.configuration;
 
 import org.PayMyBuddy.service.UserDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-
 
 @Configuration
 @EnableWebSecurity
 @EnableJpaRepositories(basePackages = "org.PayMyBuddy.repository")
 public class SecurityConfig {
 
-    @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+    @Bean
+    public UserDetailsServiceImpl userDetailsService() {
+        return new UserDetailsServiceImpl();
+    }
+
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider daoAuthProvider() {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService());
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+
+        return daoAuthenticationProvider;
     }
 
     @Bean
@@ -50,21 +61,12 @@ public class SecurityConfig {
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .usernameParameter("email")
-                        .passwordParameter("password")
-                        .defaultSuccessUrl("/home", true))
+                        .passwordParameter("password").defaultSuccessUrl("/home", true))
                 .rememberMe(rememberMeConfigurer -> rememberMeConfigurer
                         .userDetailsService(userDetailsService()))
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login")
-                );
-
+                .logout(logout -> logout.logoutUrl("/logout")
+                        .logoutSuccessUrl("/login"));
 
         return http.build();
     }
-
-    protected UserDetailsServiceImpl userDetailsService() {
-        return userDetailsService;
-    }
-
 }
